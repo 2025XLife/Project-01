@@ -56,40 +56,11 @@ def _load_local_model():
         raise
 
 
-def _get_log_path() -> str:
-    """Get log path from config"""
-    try:
-        config = get_config()
-        log_path = config.get("llm_log_path", "tests/llm.log")
-        os.makedirs(os.path.dirname(log_path), exist_ok=True)
-        return log_path
-    except Exception:
-        return "tests/llm.log"
-
-
-def _log_to_file(messages: List[Dict[str, str]], response: Any, duration_ms: float = 0):
-    """Log LLM request to file"""
-    try:
-        from core.llm.utils import parse_messages_to_str, parse_response_to_str
-
-        output_text = f">>> model <local> generated at <{datetime.now().isoformat()}>\n"
-        output_text += f"- query:\n{parse_messages_to_str(messages)}\n"
-        output_text += f"- response:\n{parse_response_to_str(response)}\n"
-        output_text += f"- duration <{duration_ms}> ms\n\n"
-
-        log_path = _get_log_path()
-        with open(log_path, "a", encoding="utf-8") as f:
-            f.write(output_text)
-    except Exception as e:
-        print(f"[WARN] Failed to write LLM log: {e}")
-
-
 class LocalLLM:
     """Local LLM wrapper compatible with the LLMClient interface"""
 
     def __init__(self):
         self.model_name = "local"
-        self._log_path = _get_log_path()
 
     def chat(
         self,
@@ -143,7 +114,6 @@ class LocalLLM:
         duration_ms = (datetime.now() - start_time).total_seconds() * 1000
         content = output_text[0] if output_text else ""
 
-        _log_to_file(messages, {"content": content}, duration_ms)
         return content
 
     def chat_with_json(
@@ -197,7 +167,6 @@ class LocalLLM:
         # Handle empty response
         if not content or not content.strip():
             print(f"[WARN] LLM returned empty response")
-            _log_to_file(messages, {"content": "", "error": "empty response"}, duration_ms)
             return {}
 
         # Extract JSON from markdown code blocks
@@ -208,11 +177,9 @@ class LocalLLM:
         # Parse JSON
         try:
             result = parse_json_response(content)
-            _log_to_file(messages, result, duration_ms)
             return result
         except json.JSONDecodeError as e:
             print(f"[ERROR] JSON parsing failed: {e}")
-            _log_to_file(messages, {"error": str(e)}, duration_ms)
             return {}
 
     def extract_keywords(self, question: str, max_count: int = 3) -> List[str]:
