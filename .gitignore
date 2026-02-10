@@ -1,0 +1,16 @@
+data/
+output_history/
+__pycache__/
+tests/
+*.zip
+.ipynb_checkpoints/
+.plan/
+.claude/
+.vscode/
+kg_agents/sample/
+kg_agents/kg/templates/
+
+*.html
+*.json
+kg_agents/core/server.py
+!kg_agents/config.json
