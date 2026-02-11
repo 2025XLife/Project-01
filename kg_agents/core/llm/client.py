@@ -25,6 +25,40 @@ class LLMClient:
     def __init__(self, model: Optional[str] = None):
         self.client = get_llm_client()
         self.model = model or get_model_name()
+        self._log_path = self._get_log_path()
+
+    def _get_log_path(self) -> str:
+        try:
+            config = get_config()
+            log_path = config.get("llm_log_path", "tests/llm.log")
+            os.makedirs(os.path.dirname(log_path), exist_ok=True)
+            return log_path
+        except Exception:
+            return "tests/llm.log"
+
+    def _log(self, messages: List[Dict[str, str]], response: Any, duration_ms: float = 0):
+        try:
+            log_entry = {
+                "timestamp": datetime.now().isoformat(),
+                "model": self.model,
+                "messages": messages,
+                "response": response,
+                "duration_ms": duration_ms
+            }
+            output_lines = [
+                f">>> model <{self.model}> generated at <{datetime.now().isoformat()}>:",
+                f"- query:",
+                parse_messages_to_str(messages),
+                f"- response:",
+                parse_response_to_str(response),
+                f"- duration <{duration_ms}> ms",
+                ""
+            ]
+            output_text = "\n".join(output_lines)
+            with open(self._log_path, "a", encoding="utf-8") as f:
+                f.write(output_text)
+        except Exception as e:
+            print(f"[WARN] Failed to write LLM log: {e}")
 
     def chat(
         self,
@@ -41,6 +75,8 @@ class LLMClient:
             max_tokens=max_tokens
         )
         content = resp.choices[0].message.content
+        duration_ms = (datetime.now() - start_time).total_seconds() * 1000
+        self._log(messages, {"content": content}, duration_ms)
         return content
 
     def chat_with_json(
@@ -61,6 +97,8 @@ class LLMClient:
                 **filtered_kwargs
             )
         content = resp.choices[0].message.content
+        duration_ms = (datetime.now() - start_time).total_seconds() * 1000
+        self._log(messages, {"content": content}, duration_ms)
         return content
 
     def extract_keywords(self, question: str, max_count: int = 3) -> List[str]:

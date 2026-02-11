@@ -12,7 +12,7 @@ from agents.diet.parser_var import DietPlanParser
 from core.llm.utils import parse_json_response
 from agents.diet.config import *
 from kg.prompts import (
-    available_strategies, available_cuisines, DIET_GENERATION_SYSTEM_PROMPT
+    available_strategies, available_cuisines, GET_DIET_GENERATION_SYSTEM_PROMPT
 )
 
 
@@ -75,7 +75,8 @@ class DietAgent(BaseAgent, DietAgentMixin):
         top_k: int = 50,
         user_preference: str = None,
         use_vector: bool = True,  # GraphRAG: use vector search instead of keyword matching
-        rag_topk: int = 3
+        rag_topk: int = 3,
+        kg_context: str = None
     ) -> List[DietRecommendation]:
         # Reinitialize parser if variant configuration changed
         if (num_variants != self.num_variants or
@@ -104,27 +105,30 @@ class DietAgent(BaseAgent, DietAgentMixin):
             activity_factor=self._get_activity_factor(user_meta.get("fitness_level", "beginner"))
         )
 
-        # Get KG context
-        kg_context = ""
-        conditions = user_meta.get("medical_conditions", [])
+        if kg_context is None:
+            # Get KG context
+            kg_context = ""
+            conditions = user_meta.get("medical_conditions", [])
 
-        # Query condition-based KG context
-        if conditions:
-            dietary_knowledge = self.query_dietary_knowledge(
-                conditions, user_meta.get("dietary_restrictions", [])
-            )
-            kg_context = self._format_kg_context(dietary_knowledge)
+            # Query condition-based KG context
+            if conditions:
+                dietary_knowledge = self.query_dietary_knowledge(
+                    conditions, user_meta.get("dietary_restrictions", [])
+                )
+                kg_context = self._format_kg_context(dietary_knowledge)
 
-        # Query entity-based KG context when user_preference is provided
-        if user_preference:
-            entity_knowledge = self.query_dietary_by_entity(
-                user_preference,
-                use_vector_search=use_vector,
-                rag_topk=rag_topk,
-                kg_format_ver=KG_FORMAT_VER
-            )
-            entity_context = self._format_dietary_entity_kg_context(entity_knowledge, kg_format_ver=KG_FORMAT_VER)
-            kg_context += entity_context
+            # Query entity-based KG context when user_preference is provided
+            if user_preference:
+                entity_knowledge = self.query_dietary_by_entity(
+                    user_preference,
+                    use_vector_search=use_vector,
+                    rag_topk=rag_topk,
+                    kg_format_ver=KG_FORMAT_VER
+                )
+                entity_context = self._format_dietary_entity_kg_context(entity_knowledge, kg_format_ver=KG_FORMAT_VER)
+                kg_context += entity_context
+        else:
+            pass
 
         # Define meal types to generate
         if meal_type:
@@ -255,7 +259,7 @@ class DietAgent(BaseAgent, DietAgentMixin):
         # Sort by deviation
         candidates.sort(key=lambda x: (x.meal_type, abs(x.calories_deviation)))
 
-        return candidates
+        return candidates, kg_context
 
     def _generate_base_plan(
         self,
@@ -297,6 +301,7 @@ class DietAgent(BaseAgent, DietAgentMixin):
         full_prompt += f"\n\n### Culinary Style: {cuisine}\nPLEASE strictly follow this style. Use ingredients and cooking methods typical for {cuisine} cuisine."
         full_prompt += constraint_prompt
 
+        DIET_GENERATION_SYSTEM_PROMPT = GET_DIET_GENERATION_SYSTEM_PROMPT()
         response = self._call_llm(
             system_prompt=DIET_GENERATION_SYSTEM_PROMPT,
             user_prompt=full_prompt,
@@ -456,7 +461,8 @@ def generate_diet_candidates(
     top_k: int = 50,
     user_preference: str = None,
     use_vector: bool = False,
-    rag_topk: str = 3
+    rag_topk: str = 3,
+    kg_context: str = None
 ) -> List[DietRecommendation]:
     agent = DietAgent(num_variants=num_variants, min_scale=min_scale, max_scale=max_scale)
     input_data = {
@@ -466,7 +472,8 @@ def generate_diet_candidates(
     }
     return agent.generate(
         input_data, num_variants, min_scale, max_scale,
-        meal_type, temperature, top_p, top_k, user_preference, use_vector, rag_topk
+        meal_type, temperature, top_p, top_k, user_preference, use_vector, rag_topk,
+        kg_context=kg_context
     )
 
 
