@@ -28,24 +28,39 @@
 
 ## 📋 Table of Contents
 
+- [📋 Table of Contents](#-table-of-contents)
 - [🌟 Overview](#-overview)
 - [🚀 Quick Start](#-quick-start)
   - [System Requirements](#system-requirements)
+    - [Software Dependencies](#software-dependencies)
+    - [Hardware Requirements](#hardware-requirements)
   - [Installation](#installation)
+    - [1. Clone the Repository](#1-clone-the-repository)
+    - [2. Create Python Environment](#2-create-python-environment)
+    - [3. Install Python Dependencies](#3-install-python-dependencies)
+    - [4. Install Neo4j Service](#4-install-neo4j-service)
 - [🏗️ Core Modules](#️-core-modules)
-  - [1. Metabolic World Model](#1-metabolic-world-model)
-  - [2. Knowledge-Graph Guided Agents](#2-knowledge-graph-guided-agents)
-  - [3. Security Module](#3-security-module)
-  - [4. Multi-omics Model](#4-multi-omics-model)
-  - [5. AR Deployment](#5-ar-deployment)
+  - [1. 🕸️ Lifestyle Prescription Generation Module](#1-️-lifestyle-prescription-generation-module)
+    - [Configuration Steps](#configuration-steps)
+    - [Test Pipelines](#test-pipelines)
+  - [2. 🧠 Diet/Exercise Sub-world model and Ranking Module](#2--dietexercise-sub-world-model-and-ranking-module)
+  - [3. 🛡️ Security Module](#3-️-security-module)
+  - [4. 🧬 Multi-omics Model](#4--multi-omics-model)
+  - [5. 🥽 AR Deployment](#5--ar-deployment)
     - [Hardware / Platform](#hardware--platform)
     - [Software Environment](#software-environment)
     - [Dependencies](#dependencies)
+      - [A. Vuplex 3D WebView (Required, Not Included)](#a-vuplex-3d-webview-required-not-included)
+      - [B. XREAL XR Plugin (Required, Already Configured)](#b-xreal-xr-plugin-required-already-configured)
+      - [C. Unity Package Manager Dependencies (Auto-installed)](#c-unity-package-manager-dependencies-auto-installed)
     - [Project Setup](#project-setup)
+      - [4.1 Configure the WebView Initial URL](#41-configure-the-webview-initial-url)
+      - [4.2 (Optional) Configure iFLYTEK Speech Recognition](#42-optional-configure-iflytek-speech-recognition)
     - [Build APK](#build-apk)
+      - [Pre-build Checklist](#pre-build-checklist)
+      - [Build Steps in Unity (Android)](#build-steps-in-unity-android)
     - [Troubleshooting](#troubleshooting)
-- [📊 Data Availability](#-data-availability)
-- [📝 Citation](#-citation)
+- [📊 Minimal Dataset](#-minimal-dataset)
 - [📄 License](#-license)
 
 ## 🌟 Overview
@@ -244,7 +259,7 @@ We also prepare the minimal dataset in `./world_model+ranking_module/data`. `sam
 ```bash
 vim world_model/model_config.py
 ```
-3.Training. The `train()` in `main.py` handles the model training process. During training, it reports the loss and Pearson correlation coefficient (Pearson’s r) at each epoch. When saving checkpoints, the model with the best Pearson’s r on the validation set is selected and stored as the optimal model. Users are required to modify `image_dir`, `data_path`, `save_dir` and `get_training_config() `. After configuring the parameters, run the following command to train the model：
+3.Training. The `train()` in `main.py` handles the model training process. During training, it reports the loss and Pearson correlation coefficient (Pearson's r) at each epoch. When saving checkpoints, the model with the best Pearson's r on the validation set is selected and stored as the optimal model. Users are required to modify `image_dir`, `data_path`, `save_dir` and `get_training_config() `. After configuring the parameters, run the following command to train the model：
 ```bash
 python main.py
 ```
