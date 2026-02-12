@@ -2,7 +2,7 @@
   <img src="./src/xlife.png" width="300" alt="X-Life System Logo">
 </p>
 
-<h1 align="center">X-Life: A Multimodal Framework for Personalized Lifestyle Medicine</h1>
+<h1 align="center">X-Life: A Metabolic World Model System for Personalised Lifestyle Medicine</h1>
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT">
@@ -23,57 +23,35 @@
 </p>
 
 <p align="center">
-  <strong>X-Life</strong> is a multimodal framework capable of integrating continuous glucose monitoring (CGM), wearable sensor signals, self-reported behavioral information, and contextual metadata to deliver personalized lifestyle prescriptions in real time.
+  <strong>X-Life</strong> is a metabolic world-model system for adaptive lifestyle medicine that translates continuous physiological data and sensing into personalised, quantitative dietary and postprandial activity prescriptions, concurrently meeting individual lifestyle preferences, contextual settings and safety constraints.
 </p>
 
 ## 📋 Table of Contents
 
-- [📋 Table of Contents](#-table-of-contents)
 - [🌟 Overview](#-overview)
 - [🚀 Quick Start](#-quick-start)
   - [System Requirements](#system-requirements)
-    - [Software Dependencies](#software-dependencies)
-    - [Hardware Requirements](#hardware-requirements)
   - [Installation](#installation)
-    - [1. Clone the Repository](#1-clone-the-repository)
-    - [2. Create Python Environment](#2-create-python-environment)
-    - [3. Install Python Dependencies](#3-install-python-dependencies)
-    - [4. Install Neo4j Service](#4-install-neo4j-service)
 - [🏗️ Core Modules](#️-core-modules)
-  - [1. 🕸️ Lifestyle Prescription Generation Module](#1-️-lifestyle-prescription-generation-module)
-    - [Configuration Steps](#configuration-steps)
-    - [Test Pipelines](#test-pipelines)
-  - [2. 🧠 Diet/Exercise Sub-world model and Ranking Module](#2--dietexercise-sub-world-model-and-ranking-module)
-  - [3. 🛡️ Security Module](#3-️-security-module)
-  - [4. 🧬 Multi-omics Model](#4--multi-omics-model)
-  - [5. 🥽 AR Deployment](#5--ar-deployment)
+  - [1. Metabolic World Model](#1-metabolic-world-model)
+  - [2. Knowledge-Graph Guided Agents](#2-knowledge-graph-guided-agents)
+  - [3. Security Module](#3-security-module)
+  - [4. Multi-omics Model](#4-multi-omics-model)
+  - [5. AR Deployment](#5-ar-deployment)
     - [Hardware / Platform](#hardware--platform)
     - [Software Environment](#software-environment)
     - [Dependencies](#dependencies)
-      - [A. Vuplex 3D WebView (Required, Not Included)](#a-vuplex-3d-webview-required-not-included)
-      - [B. XREAL XR Plugin (Required, Already Configured)](#b-xreal-xr-plugin-required-already-configured)
-      - [C. Unity Package Manager Dependencies (Auto-installed)](#c-unity-package-manager-dependencies-auto-installed)
     - [Project Setup](#project-setup)
-      - [4.1 Configure the WebView Initial URL](#41-configure-the-webview-initial-url)
-      - [4.2 (Optional) Configure iFLYTEK Speech Recognition](#42-optional-configure-iflytek-speech-recognition)
     - [Build APK](#build-apk)
-      - [Pre-build Checklist](#pre-build-checklist)
-      - [Build Steps in Unity (Android)](#build-steps-in-unity-android)
     - [Troubleshooting](#troubleshooting)
-- [📊 Minimal Dataset](#-minimal-dataset)
+- [📊 Data Availability](#-data-availability)
+- [📝 Citation](#-citation)
 - [📄 License](#-license)
 
 ## 🌟 Overview
 
-This repository contains the code, packages, and sample dataset for the paper **"A metabolic world model system for personalized lifestyle medicine"**.
+This repository contains the code, packages, and sample dataset for the paper **"A metabolic world model system for personalised lifestyle medicine"**.
 
-X-Life system achieves personalized lifestyle prescriptions through the following core components:
-
-- **🧠 Metabolic World Model**: Predicts the impact of diet and exercise on glucose trajectories
-- **🕸️ Knowledge-Graph Guided Agents**: Generates personalized prescriptions based on a hybrid vector-graph metabolic knowledge base
-- **🛡️ Security Module**: Ensures clinical safety through semantic auditing and deterministic constraints
-- **🧬 Multi-omics Integration**: Supports glucose prediction based on multi-omics data
-- **🥽 AR Deployment**: Provides real-time interactive interface on XREAL AR devices
 
 ## 🚀 Quick Start
 
@@ -172,7 +150,7 @@ Make sure the Neo4j server has started:
 ```bash
 cd kg_module
 # Extract knowledge from ./data
-python -m core.build_kg_2_steps
+python -m core.build_kg
 # Import knowledge graph
 python -m core.import_kg
 # (Optional) Embedding knowledge graph
@@ -184,9 +162,9 @@ python -m core.embed_kg
 **Generation and Assessment Pipelines**
 ```bash
 # Test diet prescription pipeline
-python -m pipeline.diet_pipeline --bn 2 --vn 5 --query "I want a sandwich with just veggies, no meat." --use_vector --rag_topk 5
-# Test exer prescription pipeline
-python -m pipeline.exer_pipeline --bn 2 --vn 4 --query "I want to do some back exercises at the gym." --use_vector --rag_topk 5
+python -m pipeline.diet_pipeline --bn 1 --vn 5 --query "I want a sandwich with just veggies, no meat." --use_vector --rag_topk 5
+# Test exercise prescription pipeline
+python -m pipeline.exer_pipeline --bn 1 --vn 4 --query "I want to do some back exercises at the gym." --use_vector --rag_topk 5
 ```
 
 **Start Flask Service**
@@ -215,7 +193,6 @@ curl -X POST http://localhost:5000/api/v1/safety/evaluate \
     "plan": {plan_to_assess}
   }'
 ```
-
 
 ### 2. 🧠 Diet/Exercise Sub-world model and Ranking Module
 
@@ -263,24 +240,26 @@ Prepare the user metadata and physiological trajectory in the following format:
 ```
 We also prepare the minimal dataset in `./world_model+ranking_module/data`. `sample_data.json` includes the metadata, diet information, exercise information, sleep information. `sample_meal_01.jpg` is the diet image.
 
-1. Model config. In `model_config.py`, the `default` settings can be used directly, which are consistent with the experimental configuration reported in our paper.  Notably, X-Life supports all open-source LLMs and VLMs.
+2.Model config. In `model_config.py`, the `default` settings can be used directly, which are consistent with the experimental configuration reported in our paper.  Notably, X-Life supports all open-source LLMs and VLMs.
 ```bash
 vim world_model/model_config.py
 ```
-1. Training. The `train()` in `main.py` handles the model training process. During training, it reports the loss and Pearson correlation coefficient (Pearson’s r) at each epoch. When saving checkpoints, the model with the best Pearson’s r on the validation set is selected and stored as the optimal model. Users are required to modify `image_dir`, `data_path`, `save_dir` and `get_training_config() `. After configuring the parameters, run the following command to train the model：
+3.Training. The `train()` in `main.py` handles the model training process. During training, it reports the loss and Pearson correlation coefficient (Pearson’s r) at each epoch. When saving checkpoints, the model with the best Pearson’s r on the validation set is selected and stored as the optimal model. Users are required to modify `image_dir`, `data_path`, `save_dir` and `get_training_config() `. After configuring the parameters, run the following command to train the model：
 ```bash
 python main.py
 ```
 
-1. Evaluation. After training is completed, the model can be evaluated by switching it to `trainer.evaluate()`. The model will output the predicted CGM values along with the corresponding evaluation metrics. The code is shown below: 
+4.Evaluation. After training is completed, the model can be evaluated by switching it to `trainer.evaluate()`. The model will output the predicted CGM values along with the corresponding evaluation metrics. The code is shown below: 
 ```bash
 python main.py
 ```
 
-1. Multi-stage alignment. We follow the official [repo](https://github.com/eric-mitchell/direct-preference-optimization) to complete multi-stage alignment, enabling the model to output personalized lifestyle prescriptions.
+5.Multi-stage alignment. We follow the official [repo](https://github.com/eric-mitchell/direct-preference-optimization) to complete multi-stage alignment, enabling the model to output personalized lifestyle prescriptions.
+
+
 ### 3. 🛡️ Security Module
 
-A security module based on retrieval-augmented generation is designed to enforce safety constraints and reduce hallucination risk of lifestyle prescriptions. We use [Qwen3-8B] (https://huggingface.co/collections/Qwen/qwen3) as the backbone. The designed system prompt is in `./security_module/prompt.json`.
+A security module based on retrieval-augmented generation is designed to enforce safety constraints and reduce hallucination risk of lifestyle prescriptions. We use [Qwen3-8B](https://huggingface.co/collections/Qwen/qwen3) as the backbone. The designed system prompt is in `./security_module/prompt.json`.
 
 ### 4. 🧬 Multi-omics Model
 
@@ -319,9 +298,7 @@ This Unity project targets **XREAL AR** devices to:
 - Target platform: Android
 - Device: XREAL devices / runtimes that support XREAL XR Plugin (and any Android device that can install an APK)
 - Debugging: USB cable + USB debugging enabled (required for Build & Run)
-<p align="center">
-  <img src="./src/hardware.png" width="500" alt="X-Life System Hardware">
-</p>
+
 
 #### Software Environment
 
@@ -413,8 +390,7 @@ Alternatively, you can create a ScriptableObject config in Unity Editor:
 
 ## 📊 Minimal Dataset
 
-A minimal, de-identified sample dataset containing representative CGM traces and structured lifestyle logs is available at `./world_model+ranking_module/data`. The sample is specifically formatted for computational compatibility with the X-Life preprocessing and modeling pipelines, enabling code verification and functional demonstration. It is intended exclusively for testing and development purposes. Use of this sample for clinical inference, biomedical research, or any generalizable conclusion is strictly discouraged.
-
+A minimal, de-identified sample dataset containing representative CGM traces and structured lifestyle logs is available at `./world_model+ranking_module/data`. The sample is specifically formatted for computational compatibility with the X-Life preprocessing and modeling pipelines, enabling code verification and functional demonstration. It is intended exclusively for testing and development purposes. 
 
 ## 📄 License
 
