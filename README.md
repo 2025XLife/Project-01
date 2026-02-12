@@ -53,7 +53,7 @@ This repository contains code, package and sample dataset for the paper "A metab
 
 ## Prerequisites & Installation
 - **Software Dependencies**: Python 3.10, Pytorch 2.6, JDK-17.0.18, Unity3D [2022.3.x]
-- **Hardware Requirements**: NVIDIA A800 (for training), Windows 10 (for AR)
+- **Hardware Requirements**: NVIDIA A800 (for training),  Android 14+ (for AR)
 - **Environment Setup**:
 
 1. Clone the repository:
@@ -202,6 +202,7 @@ This Unity project targets **XREAL AR** devices to:
 - Embed a web page as the main UI via **Vuplex 3D WebView** (WebView scene)
 - Trigger **XREAL RGB Camera** capture / screen recording from the web page (camera capture scene)
 - Send capture results (photos/videos, local file paths / local HTTP URLs, etc.) back to the web page via `postMessage`
+- 
 
 #### 1) Hardware / Platform
 
@@ -214,6 +215,7 @@ This Unity project targets **XREAL AR** devices to:
 - Unity: `2022.3.x` (this project uses `2022.3.61t8` in `ProjectSettings/ProjectVersion.txt`)
 - Unity Hub modules: Android Build Support (SDK / NDK / OpenJDK)
 - Optional: `adb` (usually not needed if you use Unity's Build & Run; needed for CLI install/debugging)
+- Download: Please download the complete Unity project [XLIFE-AR.zip](https://drive.google.com/file/d/1Ul-z-lDQSRvFw9aqk6uxIVhMamKpvAJM/view?usp=sharing) 
 
 #### 3) Dependencies: What must be installed?
 
