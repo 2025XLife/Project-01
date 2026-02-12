@@ -2,81 +2,119 @@
   <img src="./src/xlife.png" width="300" alt="X-Life System Logo">
 </p>
 
-<div align="center">
-</div>
+<h1 align="center">X-Life: A Multimodal Framework for Personalized Lifestyle Medicine</h1>
 
-## X-Life
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white" alt="Python 3.10">
+  </a>
+  <a href="https://pytorch.org/">
+    <img src="https://img.shields.io/badge/PyTorch-2.6-EE4C2C?logo=pytorch&logoColor=white" alt="PyTorch 2.6">
+  </a>
+  <a href="placeholder">
+    <img src="https://img.shields.io/badge/Paper-Read_Manuscript-success" alt="Paper">
+  </a>
+  <a href="#citation">
+    <img src="https://img.shields.io/badge/BibTeX-Citation-lightgrey" alt="BibTeX">
+  </a>
+</p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) &nbsp; [![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)](https://www.python.org/) &nbsp; [![PyTorch 2.6](https://img.shields.io/badge/PyTorch-2.6-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/) &nbsp; [![Paper](https://img.shields.io/badge/Paper-Read_Manuscript-success)](placeholder) &nbsp; [![BibTeX](https://img.shields.io/badge/BibTeX-Citation-lightgrey)](#citation)
+<p align="center">
+  <strong>X-Life</strong> is a multimodal framework capable of integrating continuous glucose monitoring (CGM), wearable sensor signals, self-reported behavioral information, and contextual metadata to deliver personalized lifestyle prescriptions in real time.
+</p>
 
+## 📋 Table of Contents
 
-X-Life is a multimodal framework capable of integrating continuous glucose monitoring (CGM), wearable sensor signals, self-reported behavioural information and contextual metadata  to deliver personalized lifestyle prescriptions in real time. 
-
-## Table of Contents
-- [X-Life](#x-life)
-- [Table of Contents](#table-of-contents)
-- [Overview](#overview)
-- [Prerequisites \& Installation](#prerequisites--installation)
-- [Core Modules Usage](#core-modules-usage)
-  - [1. Metabolic World Model](#1-metabolic-world-model)
-  - [2. Knowledge-Graph Guided Agents](#2-knowledge-graph-guided-agents)
-  - [3. AR Deployment](#3-ar-deployment)
-    - [1) Hardware / Platform](#1-hardware--platform)
-    - [2) Software Environment (Recommended / Verified)](#2-software-environment-recommended--verified)
-    - [3) Dependencies: What must be installed?](#3-dependencies-what-must-be-installed)
+- [📋 Table of Contents](#-table-of-contents)
+- [🌟 Overview](#-overview)
+- [🚀 Quick Start](#-quick-start)
+  - [System Requirements](#system-requirements)
+    - [Software Dependencies](#software-dependencies)
+    - [Hardware Requirements](#hardware-requirements)
+  - [Installation](#installation)
+    - [1. Clone the Repository](#1-clone-the-repository)
+    - [2. Create Python Environment](#2-create-python-environment)
+    - [3. Install Python Dependencies](#3-install-python-dependencies)
+    - [4. Install Neo4j Service](#4-install-neo4j-service)
+- [🏗️ Core Modules](#️-core-modules)
+  - [1. 🕸️ Lifestyle Prescription Generation Module](#1-️-lifestyle-prescription-generation-module)
+    - [Configuration Steps](#configuration-steps)
+    - [Test Pipelines](#test-pipelines)
+  - [2. 🧠 Diet/Exercise Sub-world model and Ranking Module](#2--dietexercise-sub-world-model-and-ranking-module)
+  - [3. 🛡️ Security Module](#3-️-security-module)
+  - [4. 🧬 Multi-omics Model](#4--multi-omics-model)
+  - [5. 🥽 AR Deployment](#5--ar-deployment)
+    - [Hardware / Platform](#hardware--platform)
+    - [Software Environment](#software-environment)
+    - [Dependencies](#dependencies)
       - [A. Vuplex 3D WebView (Required, Not Included)](#a-vuplex-3d-webview-required-not-included)
       - [B. XREAL XR Plugin (Required, Already Configured)](#b-xreal-xr-plugin-required-already-configured)
       - [C. Unity Package Manager Dependencies (Auto-installed)](#c-unity-package-manager-dependencies-auto-installed)
-    - [4) Project Setup (What You Need to Change Before Running)](#4-project-setup-what-you-need-to-change-before-running)
+    - [Project Setup](#project-setup)
       - [4.1 Configure the WebView Initial URL](#41-configure-the-webview-initial-url)
       - [4.2 (Optional) Configure iFLYTEK Speech Recognition](#42-optional-configure-iflytek-speech-recognition)
-    - [5) Build APK](#5-build-apk)
-      - [5.1 Pre-build Checklist](#51-pre-build-checklist)
-      - [5.2 Build Steps in Unity (Android)](#52-build-steps-in-unity-android)
-      - [6) Troubleshooting](#6-troubleshooting)
-  - [4. Omics Integration](#4-omics-integration)
-    - [Omics Data Preparation](#omics-data-preparation)
-    - [Training Model](#training-model)
-    - [Evaluate Model](#evaluate-model)
-- [Data Availability](#data-availability)
-  - [Hardware Ecosystem](#hardware-ecosystem)
-- [Citation](#citation)
+    - [Build APK](#build-apk)
+      - [Pre-build Checklist](#pre-build-checklist)
+      - [Build Steps in Unity (Android)](#build-steps-in-unity-android)
+    - [Troubleshooting](#troubleshooting)
+- [📊 Minimal Dataset](#-minimal-dataset)
+- [📄 License](#-license)
 
----
-## Overview
+## 🌟 Overview
 
-This repository contains code, package and sample dataset for the paper "A metabolic world model system for personalised lifestyle medicine".
+This repository contains the code, packages, and sample dataset for the paper **"A metabolic world model system for personalized lifestyle medicine"**.
 
-## Prerequisites & Installation
-- **Software Dependencies**: Python 3.10, Pytorch 2.6, JDK-17.0.18, Unity3D [2022.3.x]
-- **Hardware Requirements**: NVIDIA A800 (for training),  Android 14+ (for AR)
-- **Environment Setup**:
+X-Life system achieves personalized lifestyle prescriptions through the following core components:
 
-1. Clone the repository:
+- **🧠 Metabolic World Model**: Predicts the impact of diet and exercise on glucose trajectories
+- **🕸️ Knowledge-Graph Guided Agents**: Generates personalized prescriptions based on a hybrid vector-graph metabolic knowledge base
+- **🛡️ Security Module**: Ensures clinical safety through semantic auditing and deterministic constraints
+- **🧬 Multi-omics Integration**: Supports glucose prediction based on multi-omics data
+- **🥽 AR Deployment**: Provides real-time interactive interface on XREAL AR devices
+
+## 🚀 Quick Start
+
+### System Requirements
+
+#### Software Dependencies
+- **Python**: 3.10+
+- **PyTorch**: 2.6+
+- **JDK**: 17.0.18+
+- **Unity3D**: 2022.3.x
+- **Neo4j**: 5.26.21+
+
+#### Hardware Requirements
+- **Training**: NVIDIA A800 or equivalent GPU
+- **AR Deployment**: Android 14+ compatible device
+
+### Installation
+
+#### 1. Clone the Repository
 ```bash
-git clone git@github.com:2025XLife/Project-01.git
+git clone https://github.com/2025XLife/Project-01.git
 cd Project-01
 ```
 
-2. Create and activate the environment (
-We recommend using `conda` to manage the environment and dependencies):
+#### 2. Create Python Environment
 ```bash
+# Using conda (recommended)
 conda create -n xlife python=3.10 -y
 conda activate xlife
 ```
 
-
-3. Install python dependencies:
+#### 3. Install Python Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-
-4. Install Neo4j Service:
+#### 4. Install Neo4j Service
 ```bash
 # Install JDK
 sudo apt install openjdk-11-jdk
-# check the version of the installed JDK
+# Verify JDK version
 java -version
 ```
 
@@ -87,67 +125,52 @@ cd neo4j-community-5.26.21/bin/
 ./neo4j start
 ```
 
-## Core Modules Usage
-
-### 1. Metabolic World Model
-
-The **Metabolic World Model (MWM)** is a Time-Series Transformer-based simulation engine trained on over 460 million CGM time-points. Functioning as a metabolic "digital twin," it tracks continuous latent states to perform counterfactual inference, enabling the precise simulation and evaluation of physiological responses to potential diet and exercise interventions.
+## 🏗️ Core Modules
 
 
-1. Data Preparation.
-Prepare the user metadata and physiological trajectory in the following format:
-```bash
-```
-Prepare the diet images in the following folder:
-```
-```
-1. Training Model
-```bash
-cd metabolic_world_model/
-```
-1. Evaluate Model
-```bash
-```
+### 1. 🕸️ Lifestyle Prescription Generation Module
 
-### 2. Knowledge-Graph Guided Agents
+The knowledge-graph-guided lifestyle prescription generation module generates personalized diet and exercise prescriptions by grounding LLM outputs in a hybrid vector-graph metabolic knowledge base, safeguarded by a security module that enforces clinical safety through semantic auditing and deterministic constraints.
 
-The Knowledge-Graph Guided Agents `./kg_agents/` generate personalized diet and exercise prescriptions by grounding LLM outputs in a hybrid vector-graph metabolic knowledge base, safeguarded by a security module that enforces clinical safety through semantic auditing and deterministic constraints.
+#### Configuration Steps
 
+**1. Configure Database and Models**
+Configure Neo4j database, remote LLM API, and local models in `./kg_module/config.json`:
 
-1. Configure Neo4j database, remote LLM API and local models in `./kg_agents/config.json`:
 ```json
 {
-    "neo4j": { # Neo4j configuration
+    "neo4j": {
         "uri": "bolt://127.0.0.1:7687",
         "username": "your_username",
         "password": "your_password"
     },
-    "api_model": { # Remote LLM API for knowledge graph setup
+    "api_model": {
         "api_key": "your_api_key",
         "base_url": "your_base_url",
         "model": "your_api_model"
     },
-    "local_model_path": "your_local_LLM_path", # Local LLM path for generation
-    "local_emb_path": "your_local_embedding_model_path" # Local Embedding model path for RAG
+    "local_model_path": "your_local_LLM_path",
+    "local_emb_path": "your_local_embedding_model_path"
 }
 ```
 
-2. Prepare guidelines following the descriptions in our paper.
-```bash
+**2. Prepare Guidelines**
+Prepare guidelines following the descriptions in our paper:
+```
 .
 ├── data/
 │   ├── diet/
 │   │   ├── diet_guideline_1.pdf
 │   │   └── ...
-│   │
-│   └── exer/
-│       ├── exer_guideline_1.pdf
+│   └── exercise/
+│       ├── exercise_guideline_1.pdf
 │       └── ...
 ```
 
-3. Extract and embed entities (Make sure the Neo4j server has started):
+**3. Extract and Embed Entities**
+Make sure the Neo4j server has started:
 ```bash
-cd kg_agents
+cd kg_module
 # Extract knowledge from ./data
 python -m core.build_kg_2_steps
 # Import knowledge graph
@@ -156,8 +179,9 @@ python -m core.import_kg
 python -m core.embed_kg
 ```
 
-> Test Generation & Assessment Pipelines
+#### Test Pipelines
 
+**Generation and Assessment Pipelines**
 ```bash
 # Test diet prescription pipeline
 python -m pipeline.diet_pipeline --bn 2 --vn 5 --query "I want a sandwich with just veggies, no meat." --use_vector --rag_topk 5
@@ -165,50 +189,148 @@ python -m pipeline.diet_pipeline --bn 2 --vn 5 --query "I want a sandwich with j
 python -m pipeline.exer_pipeline --bn 2 --vn 4 --query "I want to do some back exercises at the gym." --use_vector --rag_topk 5
 ```
 
-5. Start Flask service:
+**Start Flask Service**
 ```bash
 python server.py
 ```
 
-> Test service interfaces:
-
+**API Interface Testing**
 ```bash
-# diet prescriptions generation
-curl -X POST http://localhost:5000/api/v1/diet/generate-only -H "Content-Type: application/json" -d '{args}'
-# exercise prescriptions generation
-curl -X POST http://localhost:5000/api/v1/exercise/generate-only -H "Content-Type: application/json" -d '{args}'
-# security module assess prescription
-curl -X POST http://localhost:5000/api/v1/safety/evaluate -H "Content-Type: application/json" -d '{
+# Diet prescription generation
+curl -X POST http://localhost:5000/api/v1/diet/generate-only \
+  -H "Content-Type: application/json" \
+  -d '{args}'
+
+# Exercise prescription generation
+curl -X POST http://localhost:5000/api/v1/exercise/generate-only \
+  -H "Content-Type: application/json" \
+  -d '{args}'
+
+# Security module assess prescription
+curl -X POST http://localhost:5000/api/v1/safety/evaluate \
+  -H "Content-Type: application/json" \
+  -d '{
     "plan_type": "diet/exercise",
     "user_metadata": {detailed_metadata},
     "plan": {plan_to_assess}
-}'
+  }'
 ```
 
-For detailed prompt sample of prescription generation, prescription assessment and knowledge graph extraction, you can refer to [kg_agents/sample_prompts.md](./kg_agents/sample_prompts.md)
 
+### 2. 🧠 Diet/Exercise Sub-world model and Ranking Module
 
-### 3. AR Deployment
+Diet/Exercise sub-world models predict latent metabolic state for diet prescription candidates. The glucose predict head simulates the glycemic trajectories 
+
+1. Data Preparation.
+Prepare the user metadata and physiological trajectory in the following format:
+```bash
+[
+    {
+        "subject_id": "XXX",
+        "subject_name": "XXX",
+        "metadata": {
+        },
+        "meals": [
+          {
+            "food_data": {
+              "food_id": "XXXX",
+              "date":"XXXX" ,
+              "meal_type":"XXXX" ,
+              "data": {
+                "time":,
+                "food_items": [
+                  {
+                    "img_names": 
+                  }
+                ]
+              }
+            },
+            "exercise_data_after_meal": {},
+            "cgm_preprandial": [],
+            "cgm_postprandial": [],
+            "sleep_data": {}
+          }
+        ],
+        "nocturnal_hypoglycemia": [
+          {
+            "date": "XXXX",
+            "cgm_pre_sleep": [],
+            "cgm_sleep": []
+          }
+        ]
+      }
+]
+```
+We also prepare the minimal dataset in `./world_model+ranking_module/data`. `sample_data.json` includes the metadata, diet information, exercise information, sleep information. `sample_meal_01.jpg` is the diet image.
+
+1. Model config. In `model_config.py`, the `default` settings can be used directly, which are consistent with the experimental configuration reported in our paper.  Notably, X-Life supports all open-source LLMs and VLMs.
+```bash
+vim world_model/model_config.py
+```
+1. Training. The `train()` in `main.py` handles the model training process. During training, it reports the loss and Pearson correlation coefficient (Pearson’s r) at each epoch. When saving checkpoints, the model with the best Pearson’s r on the validation set is selected and stored as the optimal model. Users are required to modify `image_dir`, `data_path`, `save_dir` and `get_training_config() `. After configuring the parameters, run the following command to train the model：
+```bash
+python main.py
+```
+
+1. Evaluation. After training is completed, the model can be evaluated by switching it to `trainer.evaluate()`. The model will output the predicted CGM values along with the corresponding evaluation metrics. The code is shown below: 
+```bash
+python main.py
+```
+
+1. Multi-stage alignment. We follow the official [repo](https://github.com/eric-mitchell/direct-preference-optimization) to complete multi-stage alignment, enabling the model to output personalized lifestyle prescriptions.
+### 3. 🛡️ Security Module
+
+A security module based on retrieval-augmented generation is designed to enforce safety constraints and reduce hallucination risk of lifestyle prescriptions. We use [Qwen3-8B] (https://huggingface.co/collections/Qwen/qwen3) as the backbone. The designed system prompt is in `./security_module/prompt.json`.
+
+### 4. 🧬 Multi-omics Model
+
+The model supports multi-omics-based glucose prediction. The command to run it is as follows:
+```bash
+python train_omics_modality_models.py \
+  --labels labels.csv \
+  --covariates covariates.csv \
+  --metagenome metagenome.csv \
+  --lipid_metabolome lipid_metabolome.csv \
+  --proteome proteome.csv \
+  --outdir results_omics_models \
+  --key_col case_id \
+  --group_col subject_id \
+  --day_col day_index \
+  --target_col iAUC_2h_true_baseline_sub_pos_dx5 \
+  --test_size 0.2 \
+  --seed 42 \
+  --lgb_n_splits 5 \
+  --lgb_n_estimators 2000 \
+  --lgb_top_k 300 \
+  --optuna_trials 200 \
+  --calib_bins 10 \
+  --calib_strategy quantile
+```
+
+### 5. 🥽 AR Deployment
 
 This Unity project targets **XREAL AR** devices to:
 - Embed a web page as the main UI via **Vuplex 3D WebView** (WebView scene)
 - Trigger **XREAL RGB Camera** capture / screen recording from the web page (camera capture scene)
 - Send capture results (photos/videos, local file paths / local HTTP URLs, etc.) back to the web page via `postMessage`
 
-#### 1) Hardware / Platform
+#### Hardware / Platform
 
 - Target platform: Android
 - Device: XREAL devices / runtimes that support XREAL XR Plugin (and any Android device that can install an APK)
 - Debugging: USB cable + USB debugging enabled (required for Build & Run)
+<p align="center">
+  <img src="./src/hardware.png" width="500" alt="X-Life System Hardware">
+</p>
 
-#### 2) Software Environment (Recommended / Verified)
+#### Software Environment
 
-- Unity: `2022.3.x` (this project uses `2022.3.61t8` in `ProjectSettings/ProjectVersion.txt`)
-- Unity Hub modules: Android Build Support (SDK / NDK / OpenJDK)
-- Optional: `adb` (usually not needed if you use Unity's Build & Run; needed for CLI install/debugging)
-- Download: Please download the complete Unity project [XLIFE-AR.zip](https://drive.google.com/file/d/1Ul-z-lDQSRvFw9aqk6uxIVhMamKpvAJM/view?usp=sharing) 
+- **Unity**: `2022.3.x` (this project uses `2022.3.61t8` in `ProjectSettings/ProjectVersion.txt`)
+- **Unity Hub modules**: Android Build Support (SDK / NDK / OpenJDK)
+- **Optional**: `adb` (usually not needed if you use Unity's Build & Run; needed for CLI install/debugging)
+- **Download**: Please download the complete Unity project [XLIFE-AR.zip](https://drive.google.com/file/d/1Ul-z-lDQSRvFw9aqk6uxIVhMamKpvAJM/view?usp=sharing)
 
-#### 3) Dependencies: What must be installed?
+#### Dependencies
 
 > The two most common blockers are: **Vuplex (commercial, not included in the repo)** + **XREAL XR Plugin (provided as a local tar package)**.
 
@@ -228,7 +350,7 @@ This Unity project targets **XREAL AR** devices to:
 
 After opening the project, Unity resolves dependencies from `Packages/manifest.json` automatically (e.g., Input System / AR Foundation / XR Interaction Toolkit). In most cases you do not need to install anything manually in Package Manager.
 
-#### 4) Project Setup (What You Need to Change Before Running)
+#### Project Setup
 
 ##### 4.1 Configure the WebView Initial URL
 
@@ -256,9 +378,9 @@ Alternatively, you can create a ScriptableObject config in Unity Editor:
 - Set the credentials in the Inspector
 - Place the config asset in `Assets/Resources/` folder
 
-#### 5) Build APK
+#### Build APK
 
-##### 5.1 Pre-build Checklist
+##### Pre-build Checklist
 
 - Vuplex is imported correctly (otherwise you will see compilation errors like missing `Vuplex.WebView` namespace)
 - `Packages/com.xreal.xr.tar.gz` exists and Unity Package Manager shows no errors
@@ -266,7 +388,7 @@ Alternatively, you can create a ScriptableObject config in Unity Editor:
   - `Assets/Scenes/WebView.unity`
   - `Assets/Scenes/RGBCameraAndCapture.unity`
 
-##### 5.2 Build Steps in Unity (Android)
+##### Build Steps in Unity (Android)
 
 1. `File -> Build Settings...`
 2. Select `Android`, then click `Switch Platform`
@@ -281,51 +403,19 @@ Alternatively, you can create a ScriptableObject config in Unity Editor:
 
 > Note: this project includes a custom manifest at `Assets/Plugins/Android/AndroidManifest.xml`, which declares network/microphone/screen-capture related permissions, including the Android 14+ foreground service permission `FOREGROUND_SERVICE_MEDIA_PROJECTION`.
 
-##### 6) Troubleshooting
+#### Troubleshooting
 
 - `The type or namespace name 'Vuplex' could not be found`: Vuplex 3D WebView is not imported
 - WebView is blank / cannot load: check `InitialUrl`, device network, and whether cleartext HTTP is allowed (if using `http`)
 - Camera / screen recording does not work in Editor: XREAL capture APIs typically only work on real Android devices (there is also a mock branch in scripts)
 - Screen recording issues on Android 14+: make sure you did not overwrite/remove the foreground service permission declarations in `Assets/Plugins/Android/AndroidManifest.xml`
 
-### 4. Omics Integration
-(这块可能需要按照组学代码修改，这里我让AI乱写的)
-As a supplementary layer for enhanced personalization, X-Life supports the integration of multi-omics data. The system can ingest **gut microbiome profiles** and **metabolomics data** to refine its predictive accuracy. By correlating specific bacterial strains (e.g., *P. copri*) and metabolic markers with glycemic responses, the model can tailor interventions to the user's unique biological microbiome signature.
 
-#### Omics Data Preparation
-```bash
-```
-#### Training Model
-```bash
-cd omics_model/
-```
-#### Evaluate Model
-```bash
-```
+## 📊 Minimal Dataset
 
-## Data Availability
-X-Life was trained on a dataset comprising 1.28 million lifestyle records and 0.46 billion continuous glucose monitoring (CGM) readings, collected from 834,360 individuals across multiple cohorts in China and the UK. The complete training corpus underlying the Metabolic World Model is accessible to researchers upon formal application to the respective cohort management committees, subject to applicable data privacy regulations and institutional approvals.
+A minimal, de-identified sample dataset containing representative CGM traces and structured lifestyle logs is available at `./world_model+ranking_module/data`. The sample is specifically formatted for computational compatibility with the X-Life preprocessing and modeling pipelines, enabling code verification and functional demonstration. It is intended exclusively for testing and development purposes. Use of this sample for clinical inference, biomedical research, or any generalizable conclusion is strictly discouraged.
 
-A minimal, de-identified sample dataset containing representative CGM traces and structured lifestyle logs is available at `src/sample_data_placeholder.zip`. The sample is specifically formatted for computational compatibility with the X-Life preprocessing and modeling pipelines, enabling code verification and functional demonstration. It is intended exclusively for testing and development purposes. Use of this sample for clinical inference, biomedical research, or any generalizable conclusion is strictly discouraged.
 
-To train and evaluate the model, run:
-```bash
-cd metabolic_world_model
-mv ../src/sample_data_placeholder.zip data/sample_data.zip
-unzip -d data/ data/sample_data.zip
-python ...
-```
+## 📄 License
 
-### Hardware Ecosystem
-* CGM sensor (SIBIONICS CGM)
-* Fit Bands that provide sleep analysis, heart rate monitoring, etc. 
-* XREAL One Pro (XREAL, China, Shenzhen) 
-
-## Citation
-```bibtex
-@misc{XLife2026,
-  title = {X-Life: A metabolic world model system for personalised lifestyle medicine},
-  author = {Wu, Qian and Qin, Yiming and et al.},
-  year = {2026}
-}
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
