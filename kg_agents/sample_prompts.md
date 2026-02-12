@@ -1,6 +1,8 @@
 # Sample Prompts:
+We use DeepSeek-R1-0528 for knowledge graph extraction.
 
-1. Diet Generation:This section provides the LLM prompt for lifestyle prescription generation module.
+#### 1. Prescription Generation
+This section provides the LLM prompt for lifestyle prescription generation module.
 This prompt activates the core lifestyle prescription generation module by dynamically injecting related Knowledge Graph Guidelines. The goal is to synthesize these strict medical facts into a quantitative plan that balances scientific precision with the user's personal preferences, and could be rapidly expanded through portion modulation.
 ```
 You are a certified clinical dietitian specializing in precision portion planning for one meal. Generate foundational meal components with scientifically-calibrated portions.
@@ -28,7 +30,8 @@ The user strictly explicitly wants: {User_Requirement}
 ...
 ```
 
-2. Prescription Assessment: This section provides the LLM prompt for security module.
+#### 2. Prescription Assessment:
+This section provides the LLM prompt for security module.
 ```
 You are a safety assessment expert. Analyze the following diet plan for safety issues.
 ## Profile: {User_Profile}
@@ -49,7 +52,8 @@ Identify any safety concerns:
 ...
 ```  
 
-3. Knowledge-Graph Extraction: This section provides two LLM prompts for Knowledge Graph extraction.
+####  3. Knowledge-Graph Extraction:
+This section provides two LLM prompts for Knowledge Graph extraction.
    1. The Knowledge Graph is initially extracted using the following prompt. This prompt utilizes a CoT process that first identifying the entities, and then derive the relations under the restriction of identified entities, ensuring the knowledge graph to be cohesive [^mo2025]. 
 ```
 You are a nutrionalist that extracts key Diet, Nutrition, and Lifestyle related entities from the Source Text.

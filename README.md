@@ -160,9 +160,9 @@ python -m core.embed_kg
 
 ```bash
 # Test diet prescription pipeline
-python -m pipeline.diet_pipeline --bn 1 --vn 5 --query "I want a sandwich with just veggies, no meat." --use_vector --rag_topk 5
+python -m pipeline.diet_pipeline --bn 2 --vn 5 --query "I want a sandwich with just veggies, no meat." --use_vector --rag_topk 5
 # Test exer prescription pipeline
-python -m pipeline.exer_pipeline --bn 1 --vn 4 --query "I want to do some back exercises at the gym." --use_vector --rag_topk 5
+python -m pipeline.exer_pipeline --bn 2 --vn 4 --query "I want to do some back exercises at the gym." --use_vector --rag_topk 5
 ```
 
 5. Start Flask service:
@@ -184,6 +184,8 @@ curl -X POST http://localhost:5000/api/v1/safety/evaluate -H "Content-Type: appl
     "plan": {plan_to_assess}
 }'
 ```
+
+For detailed prompt sample of prescription generation, prescription assessment and knowledge graph extraction, you can refer to [kg_agents/sample_prompts.md](./kg_agents/sample_prompts.md)
 
 
 ### 3. AR Deployment
