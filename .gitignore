@@ -16,7 +16,7 @@ kg_agents/kg/templates/
 *.png
 *.jpg
 *.jpeg
-!src/sample_data_placeholder.zip
+!src/hardware.png
 !src/xlife.png
 kg_agents/core/server.py
 !kg_agents/config.json
