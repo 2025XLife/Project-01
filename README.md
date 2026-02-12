@@ -317,7 +317,7 @@ python ...
 ### Hardware Ecosystem
 * CGM sensor (SIBIONICS CGM)
 * Fit Bands that provide sleep analysis and heart rate monitoring. 
-* XREAL One Pro (XREAL, China) 
+* XREAL One Pro (XREAL, China, Shenzhen) 
 
 ## Citation
 ```bibtex
