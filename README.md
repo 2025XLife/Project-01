@@ -202,7 +202,6 @@ This Unity project targets **XREAL AR** devices to:
 - Embed a web page as the main UI via **Vuplex 3D WebView** (WebView scene)
 - Trigger **XREAL RGB Camera** capture / screen recording from the web page (camera capture scene)
 - Send capture results (photos/videos, local file paths / local HTTP URLs, etc.) back to the web page via `postMessage`
-- 
 
 #### 1) Hardware / Platform
 
