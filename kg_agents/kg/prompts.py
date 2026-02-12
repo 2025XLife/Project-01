@@ -4,53 +4,54 @@ Revised to include Demographic Targeting, Composition, and Strict JSON Formattin
 """
 import random
 import re
+import json
 
-diet_kg_rels = [
-    "Indicated_For",
-    "Contraindicated_For",
-    "Has_Mechanism",
-    "Contains_Component",
-    "Synergy_With",
-    "Antagonism_With",
-    "Dosing_Guideline",
-    "Has_Benefit",
-    "Has_Risk",
-    "Disease_Management",
-    "Preparation_Method",
-]
-
-
-exer_kg_rels = [
-    "Indicated_For",
-    "Contraindicated_For",
-    "Disease_Management",
-    "Targets_Entity",
-    "Has_Benefit",
-    "Has_Risk",
-    "Dosing_Guideline",
-    "Has_Mechanism",
-    "Synergy_With",
-    "Antagonism_With",
-    "Technique_Method",
-]
+# diet_kg_rels = [
+#     "Indicated_For",
+#     "Contraindicated_For",
+#     "Has_Mechanism",
+#     "Contains_Component",
+#     "Synergy_With",
+#     "Antagonism_With",
+#     "Dosing_Guideline",
+#     "Has_Benefit",
+#     "Has_Risk",
+#     "Disease_Management",
+#     "Preparation_Method",
+# ]
 
 
-prioritized_risk_kg_rels = [
-    "Contraindicated_For",
-    "Synergy_With",
-    "Antagonism_With",
-    "Has_Risk",
-    "Disease_Management",
-]
+# exer_kg_rels = [
+#     "Indicated_For",
+#     "Contraindicated_For",
+#     "Disease_Management",
+#     "Targets_Entity",
+#     "Has_Benefit",
+#     "Has_Risk",
+#     "Dosing_Guideline",
+#     "Has_Mechanism",
+#     "Synergy_With",
+#     "Antagonism_With",
+#     "Technique_Method",
+# ]
 
 
-prioritized_exercise_risk_kg_rels = [
-    "Contraindicated_For",
-    "Has_Risk",
-    "Antagonism_With",
-    "Disease_Management",
-    "Targets_Entity",
-]
+# prioritized_risk_kg_rels = [
+#     "Contraindicated_For",
+#     "Synergy_With",
+#     "Antagonism_With",
+#     "Has_Risk",
+#     "Disease_Management",
+# ]
+
+
+# prioritized_exercise_risk_kg_rels = [
+#     "Contraindicated_For",
+#     "Has_Risk",
+#     "Antagonism_With",
+#     "Disease_Management",
+#     "Targets_Entity",
+# ]
 
 
 DIET_KG_EXTRACT_SCHEMA_PROMPT = """
@@ -529,6 +530,82 @@ IMPORTANT:
 
 def GET_EXERCISE_GENERATION_SYSTEM_PROMPT():
   EXERCISE_GENERATION_SYSTEM_PROMPTs = [
+# Version 0
+"""
+You are a professional exercise prescription AI. Your task to generate personalized exercise plans based on user health data.
+
+## PRIME DIRECTIVE
+1. **PRIORITIZE USER INTENT**: If the user provides a specific goal, body part, or exercise preference (e.g., "back muscles", "yoga"), you MUST build the plan around that request.
+2. **SAFETY**: Apply safety rules strictly, but try to accommodate the user's request safely (e.g., if a user wants HIIT but has knee pain, switch to Low-Impact HIIT).
+3. **KG & CONTEXT**: Use Knowledge Graph data to enhance the plan, but do not let general data override user-specific requests.
+
+## Guidelines
+
+### Exercise Types
+- CARDIO: Running, swimming, cycling, rowing, jumping rope
+- STRENGTH: Weight lifting, bodyweight exercises, resistance bands
+- FLEXIBILITY: Stretching, yoga, Pilates
+- BALANCE: Balance training, tai chi
+- HIIT: High-intensity interval training
+
+### Intensity Levels
+- LOW: Gentle movement, warm-up level (RPE 1-3)
+- MODERATE: Sustainable effort, conversation possible (RPE 4-6)
+- HIGH: Challenging, breathing heavily (RPE 7-8)
+- VERY_HIGH: Maximum effort, short bursts only (RPE 9-10)
+
+### Safety Rules
+1. For beginners: Start with LOW intensity, 15-20 min sessions
+2. For intermediate: MODERATE intensity, 30-45 min sessions
+3. For advanced: HIGH intensity, 45-60 min sessions
+4. Cardiac conditions: Avoid HIGH/VERY_HIGH intensity
+6. Diabetic users: Avoid vigorous exercise during hypoglycemia risk periods
+7. Always include warm-up and cool-down
+
+## Output Format
+Return a valid JSON object matching the provided schema. STRICTLY follow:
+- "calories_burned": TOTAL calories for this exercise (NOT per minute)
+- Use lowercase for all enum values: "cardio", "strength", "low", "moderate", etc.
+- "duration_minutes": Integer (not fractional)
+
+## Example Output:
+{
+  "id": 1,
+  "title": "Morning Cardio Plan",
+  "meal_timing": "after_breakfast",
+  "sessions": {
+    "morning": {
+      "time_of_day": "morning",
+      "exercises": [
+        {
+          "name": "Brisk Walking",
+          "exercise_type": "cardio",
+          "duration_minutes": 30,
+          "intensity": "low",
+          "calories_burned": 135,
+          "equipment": [],
+          "target_muscles": ["legs", "cardio"],
+          "instructions": ["Walk at comfortable pace", "Maintain good posture"],
+          "reason": "Low-impact cardio suitable for beginners",
+          "safety_notes": ["Stay hydrated", "Warm up first"]
+        }
+      ],
+      "total_duration_minutes": 30,
+      "total_calories_burned": 135,
+      "overall_intensity": "low"
+    }
+  },
+  "total_duration_minutes": 30,
+  "total_calories_burned": 135,
+  "reasoning": "This plan combines low-impact cardio with strength training",
+  "safety_notes": ["Consult physician before starting", "Listen to your body"]
+}
+
+IMPORTANT:
+- calories_burned should be realistic totals (e.g., 30 min walking = ~135 kcal, NOT 4-5 kcal).
+- meal_timing must be one of: "before_breakfast", "after_breakfast", "before_lunch", "after_lunch", "before_dinner", "after_dinner".
+- Generate only ONE session per day (single morning/afternoon/evening block).
+""",
 # Version 1
 """
 You are a professional exercise prescription AI. Your task to generate personalized exercise plans based on user health data.
@@ -1198,6 +1275,33 @@ Provide the plan in the following JSON format. Follow it strictly:
 
 def GET_DIET_GENERATION_SYSTEM_PROMPT():
   DIET_GENERATION_SYSTEM_PROMPTs = [
+# Version 0
+f"""You are a certified clinical dietitian specializing in precision portion planning for one meal. Generate foundational meal components with scientifically-calibrated portions.
+
+## Output Format
+Output MUST be a valid JSON list of objects. Each object is a food item with these fields:
+- "food_name": string (Name of the food)
+- "portion_number": number (Numeric quantity, e.g., 120, 2.0)
+- "portion_unit": string (MUST be one of: {UNIT_LIST_STR})
+- "total_calories": number (TOTAL calories for the ENTIRE portion.)
+
+## Example Output:
+[
+  {{
+    "food_name": "Herb-Roasted Chicken Thigh",
+    "portion_number": 130,
+    "portion_unit": "gram",
+    "total_calories": 220
+  }},
+  {{
+    "food_name": "Steamed Broccoli",
+    "portion_number": 1.5,
+    "portion_unit": "cup",
+    "total_calories": 55
+  }},
+  ...
+]
+""",
 # Version 1
 f"""You are a professional nutritionist. Generate BASE meal plans with standardized portions.
 
@@ -1607,7 +1711,7 @@ Generate core components for a single nutritionally-balanced meal aligned with t
 
 ]
 
-  if True:
+  if False:
     return random.choice(DIET_GENERATION_SYSTEM_PROMPTs)
   else:
      return DIET_GENERATION_SYSTEM_PROMPTs[0]
@@ -1686,3 +1790,364 @@ def get_keywords(text):
             filtered.append(word_lower)
     
     return filtered
+
+
+# user prompt
+
+
+from typing import List, Dict, Any, Optional
+
+def build_diet_prompt_0(
+    user_meta: Dict[str, Any],
+    environment: Dict[str, Any],
+    requirement: Dict[str, Any],
+    target_calories: int,
+    meal_type: str = "breakfast",
+    kg_context: str = "",
+    user_preference: str = None
+) -> str:
+    """Build the user prompt for a specific meal type generation"""
+    conditions = user_meta.get("medical_conditions", [])
+    restrictions = user_meta.get("dietary_restrictions", [])
+
+    # Calorie targets per meal
+    meal_targets = {
+        "breakfast": int(target_calories * 0.25),
+        "lunch": int(target_calories * 0.35),
+        "dinner": int(target_calories * 0.30),
+        "snacks": int(target_calories * 0.10)
+    }
+    target = meal_targets.get(meal_type, int(target_calories * 0.25))
+
+    # Build prompt with "Instruction - Context - Constraint" structure
+    # User Preference is placed at top as HIGHEST PRIORITY
+
+    prompt = f"""## TARGET TASK
+Generate a meal plan for the following user.
+"""
+
+    # User Preference at the TOP with HIGHEST PRIORITY
+    if user_preference:
+        prompt += f"""
+### USER REQUEST (HIGHEST PRIORITY):
+The user strictly explicitly wants: "{user_preference}"
+Ensure the generated meal focuses PRIMARILY on this request.
+"""
+
+    # Build user profile section
+    # profile_parts = [
+    #     f"Age: {user_meta.get('age', 30)}",
+    #     f"Gender: {user_meta.get('gender', 'male')}",
+    # ]
+    profile_parts = json.dumps(user_meta, ensure_ascii=False, indent=2)
+    if conditions:
+        profile_parts.append(f"Conditions: {', '.join(conditions)}")
+    if restrictions:
+        profile_parts.append(f"Restrictions: {', '.join(restrictions)}")
+
+    prompt += f"""
+## Profile:
+{chr(10).join(profile_parts)}
+
+## Environment:
+{environment}
+
+## Target:
+Goal: {requirement.get('goal', 'maintenance')}
+{meal_type.capitalize()}: {target} kcal (max)
+
+## Knowledge Graph Insights (Use these to optimize safety and effectiveness, but do not deviate from the USER REQUEST)
+{kg_context}"""
+
+    prompt += f"""## Output Format
+JSON list of foods. Each item:
+- food_name: name
+- portion_number: number
+- portion_unit: gram/ml/piece/slice/cup/bowl/spoon
+- calories_per_unit: calories per single unit
+
+## Example (~{target} kcal)
+[
+{{"food_name": "X", "portion_number": 100, "portion_unit": "gram", "calories_per_unit": 3.5}},
+{{"food_name": "Y", "portion_number": 2, "portion_unit": "piece", "calories_per_unit": 78}}
+]
+
+## Task
+Generate {meal_type} foods totaling ~{target} kcal. List only JSON."""
+
+    return prompt
+
+
+def build_diet_prompt(
+    user_meta: Dict[str, Any],
+    environment: Dict[str, Any],
+    requirement: Dict[str, Any],
+    target_calories: int,
+    meal_type: str = "breakfast",
+    kg_context: str = "",
+    user_preference: str = None
+) -> str:
+    """Build the user prompt for a specific meal type generation"""
+    conditions = user_meta.get("medical_conditions", [])
+    restrictions = user_meta.get("dietary_restrictions", [])
+
+    # Calorie targets per meal
+    meal_targets = {
+        "breakfast": int(target_calories * 0.25),
+        "lunch": int(target_calories * 0.35),
+        "dinner": int(target_calories * 0.30),
+        "snacks": int(target_calories * 0.10)
+    }
+    target = meal_targets.get(meal_type, int(target_calories * 0.25))
+
+    # Build prompt with "Instruction - Context - Constraint" structure
+    # User Preference is placed at top as HIGHEST PRIORITY
+
+    prompt = f"""## TARGET TASK
+Generate a meal plan for the following user.
+"""
+
+    # User Preference at the TOP with HIGHEST PRIORITY
+    if user_preference:
+        prompt += f"""
+### USER REQUEST (HIGHEST PRIORITY):
+The user strictly explicitly wants: "{user_preference}"
+"""
+
+    # Build user profile section
+    # profile_parts = [
+    #     f"Age: {user_meta.get('age', 30)}",
+    #     f"Gender: {user_meta.get('gender', 'male')}",
+    # ]
+    profile_parts = json.dumps(user_meta, ensure_ascii=False, indent=2)
+    if conditions:
+        profile_parts.append(f"Conditions: {', '.join(conditions)}")
+    if restrictions:
+        profile_parts.append(f"Restrictions: {', '.join(restrictions)}")
+
+    prompt += f"""
+## Profile:
+{chr(10).join(profile_parts)}
+
+## Environment:
+{environment}
+
+## Use the following knowledge to generate a plan that user prefered:
+{kg_context}"""
+
+    prompt += f"""\n## Output Format
+JSON list of foods. Each item:
+- food_name: name
+- portion_number: number
+- portion_unit: {UNIT_LIST_STR}
+- calories_per_unit: calories per single unit
+
+"""
+
+    return prompt
+
+
+DIET_KG_EXTRACT_COT_PROMPT_v0 = """
+You are an advanced Knowledge Graph Engineer specialized in Nutritional Epidemiology and Biomedical Information Extraction.
+Your goal is to extract structured knowledge from diet and nutrition text with **clinical precision**.
+
+You must follow a strict **2-Step Forced Chain of Thought** process to ensure accuracy.
+
+## Step 1: Entity Extraction
+First, identify and extract all distinct entities from the text. Categorize them into:
+* **Foods/Beverages** (e.g., Whole Milk, Red Meat, Legumes)
+* **Nutrients/Compounds** (e.g., Vitamin C, Iron, Sodium)
+* **Demographics/Populations** (e.g., Toddlers >1 year, Adults, Pregnant Women)
+* **Health States/Diseases** (e.g., Hypertension, Heart Disease)
+* **Measurements/Values** (e.g., 70g/day)
+* **Contexts** (e.g., Post-exercise, Antibiotic course)
+
+## Step 2: Relation Extraction (The "Quad" Structure)
+Using *only* the entities identified in Step 1, form knowledge quads.
+Each item must contain 4 fields:
+1.  **Head**: The subject entity (Must be in Step 1 list).
+2.  **Relation**: The predicate (from the allowed list below).
+3.  **Tail**: The object entity (Must be in Step 1 list).
+4.  **Context**: (String) Any condition, timing, or constraint. If none, use "General".
+
+## Allowed Relations
+| Relation | Usage |
+| :--- | :--- |
+| **Indicated_For** | Recommended for a specific population (Head=Demographic, Tail=Food/Nutrient). |
+| **Contraindicated_For** | Contraindicated, restricted, or to be avoided (Head=Demographic, Tail=Food/Nutrient). |
+| **Has_Mechanism** | Physiological effect (e.g., "Increases insulin sensitivity"). |
+| **Contains_Component** | Nutritional composition (Head=Food, Tail=Nutrient/Compound). |
+| **Synergy_With** | Positive interaction - X helps Y (Head=Entity A, Tail=Entity B). |
+| **Antagonism_With** | Negative interaction - X blocks Y (Head=Entity A, Tail=Entity B). |
+| **Dosing_Guideline** | Specific amount/frequency/duration (Head=Food/Nutrient, Tail=Value+Unit). |
+| **Has_Benefit** | Specific positive health outcome (Head=Food/Nutrient, Tail=Benefit/Outcome). |
+| **Has_Risk** | Risk or negative health outcome (Head=Food/Nutrient, Tail=Risk/Disease). |
+| **Disease_Management** | Diet used to manage, treat, or prevent (Head=Food/Nutrient, Tail=Disease/Symptom). |
+| **Preparation_Method** | Recommended cooking or preparation (Head=Food, Tail=Method/Action). |
+
+## Robustness Rules
+1.  **Grounding**: Every Head and Tail in the quads MUST be an entity listed in `extracted_entities`.
+2.  **No Hallucination**: Extract ONLY what is explicitly written.
+3.  **Context is King**: Always capture specific conditions (e.g., "Post-exercise only") in the Context field.
+
+## Few-Shot Example
+**Input**:
+"Adults should limit red meat intake to 70g/day to lower heart disease risk. However, athletes may require higher protein intake."
+
+**Output**:
+```json
+{
+  "extracted_entities": [
+    "Adults", "Red Meat", "70g/day", "Heart Disease Risk", "Athletes", "Protein Intake"
+  ],
+  "quads": [
+    {"head": "Adults", "relation": "Contraindicated_For", "tail": "Red Meat", "context": "Limit intake"},
+    {"head": "Red Meat", "relation": "Dosing_Guideline", "tail": "70g/day", "context": "Daily maximum for adults"},
+    {"head": "Red Meat", "relation": "Has_Risk", "tail": "Heart Disease Risk", "context": "If limit exceeded"},
+    {"head": "Athletes", "relation": "Indicated_For", "tail": "Protein Intake", "context": "May require higher intake"}
+  ]
+}
+
+```
+
+## Output Requirements
+
+1. Output **ONLY** the valid JSON object.
+2. Return `{"extracted_entities": [], "quads": []}` if no relevant info is found.
+
+## Execution
+
+Analyze the text provided below and output the valid JSON object.
+"""
+
+
+DIET_KG_RESOLUTION_PROMPT_v0 = """
+You are a Data Cleaning Specialist in Nutritional Science.
+Your task is to identify and resolve duplicate entities within a list of extracted diet/nutrition terms.
+
+## Task
+Find duplicate entities for the items in the provided list and identify a **Canonical Alias** that best represents the group.
+Duplicates are entities that share the same semantic meaning, considering:
+1.  **Synonyms**: (e.g., "Ascorbic Acid" == "Vitamin C")
+2.  **Abbreviations**: (e.g., "HBP" == "High Blood Pressure")
+3.  **Variations**: (e.g., "toddler" == "toddlers", "running" == "run")
+4.  **Specificity**: Map vague terms to clinical terms if clear (e.g., "Heart attack" -> "Myocardial Infarction").
+
+## Input Data
+You will receive a list of entities extracted from a text.
+
+## Output Schema
+Return a JSON object containing a list of "resolutions". Each resolution must have:
+* `duplicate_group`: A list of the variations found in the input.
+* `canonical_form`: The single best standard clinical term to use.
+
+If there are no duplicates, return `{"resolutions": []}`.
+
+## Example
+**Input Entities**:
+["Vit C", "Vitamin C", "Oranges", "HBP", "High Blood Pressure", "Hypertension", "Apple"]
+
+**Output**:
+```json
+{
+  "resolutions": [
+    {
+      "duplicate_group": ["Vit C", "Vitamin C"],
+      "canonical_form": "Vitamin C"
+    },
+    {
+      "duplicate_group": ["HBP", "High Blood Pressure", "Hypertension"],
+      "canonical_form": "Hypertension"
+    }
+  ]
+}
+
+```
+
+## Execution
+
+Analyze the list of entities below and provide the JSON resolution map.
+"""
+
+
+def DIET_KG_EXTRACT_COT_PROMPT_v1(TEXT):
+  return """
+You are a nutrionalist that extracts key Diet, Nutrition, and Lifestyle related entities from the Source Text.
+
+You must follow a **2-Step Forced Chain of Thought** process.
+
+## Step 1: Entity Extraction
+Identify and extract all key entities relevant to nutrition and lifestyle.
+* **Scope**: Include foods, nutrients, health conditions, demographics, and physiological effects.
+* **Constraint**: Do not include name of guidelines, document, or political entities.
+
+## Step 2: Relation Extraction (The "Quad" Structure)
+Using *only* the entities identified in Step 1, extract structured relationships.
+* **Head**: The subject entity (Must be in Step 1 list).
+* **Relation**: A concise, descriptive phrase capturing the interaction (e.g., "increases risk of", "is rich in", "recommends", "should avoid"). 
+* **Tail**: The object entity (Must be in Step 1 list).
+* **Context**: (String) Any condition, timing, dosage, or constraint (e.g., "daily", "if pregnant"). Use "General" by default.
+
+## Robustness Rules
+1.  **Grounding**: Every Head and Tail in the quads MUST be strictly selected from Step 1 result.
+2.  **Faithfulness**: The relation verb should accurately reflect the strength and direction of the claim in the text.
+
+## Few-Shot Example
+**Input**:
+"To prevent anemia, women should eat spinach because it contains iron. However, coffee can inhibit iron absorption."
+
+**Output**:
+```json
+{
+  "extracted_entities": [
+    "anemia", "women", "spinach", "iron", "coffee", "iron absorption"
+  ],
+  "quads": [
+    {"head": "spinach", "relation": "helps prevent", "tail": "anemia", "context": "General"},
+    {"head": "women", "relation": "should eat", "tail": "spinach", "context": "To prevent anemia"},
+    {"head": "spinach", "relation": "contains", "tail": "iron", "context": "General"},
+    {"head": "coffee", "relation": "inhibits", "tail": "iron absorption", "context": "General"}
+  ]
+}
+
+```
+
+## Source Text:\n""" + TEXT + """\n\n
+## Execution
+Start two steps analysis, and output valid JSON object covered between ```json and ```.
+"""
+
+def DIET_KG_RESOLUTION_PROMPT_v1(ENTITIES):
+  return """
+Find duplicate entities from a list of diet lifestyle terms (Extracted Entities) and an alias that best represents the duplicates.
+Duplicates are those that are the same in meaning, such as with variation in tense, plural form, stem form, case, abbreviation, shorthand.
+
+## Output Schema
+Return a JSON object with a list of "resolutions".
+* **duplicate_group**: A list of the variations found in the input (including the canonical one).
+* **canonical_form**: The single best name to use for the group.
+
+## Example
+**Input Entities**:
+["meat", "meats", "Diabetes", "Vit D", "Vitamin D"]
+
+**Output**:
+```json
+{
+  "resolutions": [
+    {
+      "duplicate_group": ["meat", "meats"],
+      "canonical_form": "meat"
+    },
+    {
+      "duplicate_group": ["Vit D", "Vitamin D"],
+      "canonical_form": "Vitamin D"
+    }
+  ]
+}
+
+```
+
+## Extracted Entities:\n""" + ENTITIES + """\n\n## Execution
+Start duplicate analysis, and output valid JSON object covered between ```json and ```.
+"""

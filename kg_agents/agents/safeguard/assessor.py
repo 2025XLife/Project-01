@@ -13,7 +13,7 @@ from core.llm.utils import parse_json_response
 from core.neo4j import get_kg_query
 from agents.safeguard.config import *
 from kg.prompts import (
-    prioritized_risk_kg_rels, DIETARY_QUERY_ENTITIES,
+    DIETARY_QUERY_ENTITIES,
     get_keywords
 )
 
@@ -648,14 +648,14 @@ class SafeguardAgent(BaseAgent):
 # ## Environment
 # {environment}
 
-# ## Knowledge Graph Context
+# ## Knowledge Graph Guidelines
 # {kg_context if kg_context else "No KG data available"}
 
 # ## Plan
 # {json.dumps(plan, ensure_ascii=False, indent=2)}
 
 # ## Task
-# Identify any safety concerns that rule-based checks might miss:
+# Identify any safety concerns:
 # 1. Hidden contraindications
 # 2. Unrealistic progression
 # 3. Nutrient deficiencies
@@ -663,29 +663,42 @@ class SafeguardAgent(BaseAgent):
 # 5. Environmental mismatches
 # 6. Conflicts with user's medical conditions
 
-# Use the Knowledge Graph context to identify potential risks, contraindications, and interactions.
+# ## Output Format (STRICT JSON)
+# Return a single valid JSON object containing two lists: "risk_factors" and "checks".
+# Follow the schema definitions below STRICTLY.
 
-# Return JSON with:
-# - "risk_factors": array of {{factor, description, severity}}
-# - "checks": array of {{check_name, passed, message}}"""
+# 1. "risk_factors": list of objects containing:
+#    - "factor": (string) Name of the risk factor
+#    - "category": (string) Must be one of ["medical", "environmental", "nutritional", "exercise"]
+#    - "severity": (string) Must be one of ["low", "moderate", "high", "very_high"]
+#    - "description": (string) Detailed description of the risk
+#    - "recommendation": (string) Actionable mitigation advice
+
+# 2. "checks": list of objects containing:
+#    - "check_name": (string) Name of the specific check performed
+#    - "passed": (boolean) true or false
+#    - "message": (string) Explanation of the check result
+#    - "severity": (string, optional) If passed is false, must be one of ["low", "moderate", "high", "very_high"]
+
+# Ensure "severity" values matches the allowed Enum values EXACTLY.
+# """
+            # Assess Prompt
             prompt = f"""Analyze the following {plan_type} plan for safety issues.
 
-## User Profile
-- Age: {user_metadata.get('age', 'unknown')}
-- Conditions: {', '.join(user_metadata.get('medical_conditions', ['none']))}
-- Fitness Level: {user_metadata.get('fitness_level', 'unknown')}
+## Profile:
+{user_metadata}
 
-## Environment
+## Environment:
 {environment}
 
-## Knowledge Graph Context
+## Knowledge Graph Guidelines:
 {kg_context if kg_context else "No KG data available"}
 
-## Plan
+## Plan:
 {json.dumps(plan, ensure_ascii=False, indent=2)}
 
-## Task
-Identify any safety concerns that rule-based checks might miss, using the KG context:
+## Task:
+Identify any safety concerns:
 1. Hidden contraindications
 2. Unrealistic progression
 3. Nutrient deficiencies
@@ -693,7 +706,7 @@ Identify any safety concerns that rule-based checks might miss, using the KG con
 5. Environmental mismatches
 6. Conflicts with user's medical conditions
 
-## Output Format (STRICT JSON)
+## Output Format (STRICT JSON):
 Return a single valid JSON object containing two lists: "risk_factors" and "checks".
 Follow the schema definitions below STRICTLY.
 
@@ -714,7 +727,7 @@ Ensure "severity" values matches the allowed Enum values EXACTLY.
 """
 
             response = self._call_llm(
-                system_prompt="You are a safety assessment expert. Return only valid JSON.",
+                system_prompt="You are a safety assessment expert. ",
                 user_prompt=prompt,
                 temperature=0.3
             )
@@ -762,7 +775,7 @@ Ensure "severity" values matches the allowed Enum values EXACTLY.
         restrictions = user_metadata.get("dietary_restrictions", [])
 
         # === GraphRAG Approach: Vector Search + Graph Traversal ===
-        use_vector_search = False
+        use_vector_search = True
         if use_vector_search:
             try:
                 # 1. For each food item, use vector search to find similar entities
@@ -783,18 +796,20 @@ Ensure "severity" values matches the allowed Enum values EXACTLY.
                             for neighbor in neighbors:
                                 entity_name = neighbor.get("neighbor", "")
                                 rel_type = neighbor.get("rel_type", "")
+                                condition = neighbor.get("condition", "")
 
                                 if not entity_name:
                                     continue
 
                                 # Filter by prioritized risk relations
-                                if rel_type not in prioritized_risk_kg_rels:
-                                    continue
+                                # if rel_type not in prioritized_risk_kg_rels:
+                                #     continue
 
                                 results.append({
                                     "entity": anchor_name,
                                     "relation": rel_type,
-                                    "related_to": entity_name
+                                    "related_to": entity_name,
+                                    "condition": condition
                                 })
 
                 # 2. Also add conditions and restrictions
@@ -809,17 +824,19 @@ Ensure "severity" values matches the allowed Enum values EXACTLY.
                         for neighbor in neighbors:
                             entity_name = neighbor.get("neighbor", "")
                             rel_type = neighbor.get("rel_type", "")
+                            condition = neighbor.get("condition", "")
 
                             if not entity_name:
                                 continue
 
-                            if rel_type not in prioritized_risk_kg_rels:
-                                continue
+                            # if rel_type not in prioritized_risk_kg_rels:
+                            #     continue
 
                             results.append({
                                 "entity": anchor_name,
                                 "relation": rel_type,
-                                "related_to": entity_name
+                                "related_to": entity_name,
+                                "condition": condition
                             })
 
             except Exception as e:
@@ -846,10 +863,11 @@ Ensure "severity" values matches the allowed Enum values EXACTLY.
                         entity_name = result.get("head", "")
                         tail = result.get("tail", "")
                         rel_type = result.get("rel_type", "")
+                        condition = result.get("condition", "")
 
                         # Filter by prioritized risk relations
-                        if rel_type not in prioritized_risk_kg_rels:
-                            continue
+                        # if rel_type not in prioritized_risk_kg_rels:
+                        #     continue
 
                         if not tail:
                             continue
@@ -857,7 +875,8 @@ Ensure "severity" values matches the allowed Enum values EXACTLY.
                         results.append({
                             "entity": entity_name,
                             "relation": rel_type,
-                            "related_to": tail
+                            "related_to": tail,
+                            "condition": condition
                         })
                 except Exception as e:
                     print(f"[WARN] Failed to query entity {entity}: {e}")
@@ -866,7 +885,8 @@ Ensure "severity" values matches the allowed Enum values EXACTLY.
         if not results:
             return "No relevant KG data found."
 
-        context_lines = ["## Relevant Knowledge Graph Relationships"]
+        # context_lines = ["## Relevant Knowledge Graph Relationships"]
+        context_lines = []
         # Deduplicate results
         seen_relations = set()
         unique_results = []
@@ -877,7 +897,8 @@ Ensure "severity" values matches the allowed Enum values EXACTLY.
                 unique_results.append(r)
 
         for r in unique_results[:20]:  # Limit to 20 most relevant results
-            context_lines.append(f"- {r['entity']} --[{r['relation']}]--> {r['related_to']}")
+            # context_lines.append(f"- {r['entity']} --[{r['relation']}]--> {r['related_to']}")
+            context_lines.append("<{}, {}, {}> regarding {}".format(r['entity'], r['relation'], r['related_to'], r['condition']))
 
         return "\n".join(context_lines)
 
