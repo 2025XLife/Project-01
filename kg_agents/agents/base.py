@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from core.llm import LLMClient, get_llm
 from core.neo4j import Neo4jClient, KnowledgeGraphQuery, get_neo4j, get_kg_query
 from config_loader import get_config
-from kg.prompts import (
+from core.prompts import (
     DIETARY_QUERY_ENTITIES, EXERCISE_QUERY_ENTITIES,
     get_keywords, STOP_WORDS
 )

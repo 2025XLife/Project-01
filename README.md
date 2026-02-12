@@ -13,7 +13,7 @@
 X-Life is a multimodal framework capable of integrating continuous glucose monitoring (CGM), wearable sensor signals, self-reported behavioural information and contextual metadata  to deliver personalized lifestyle prescriptions in real time. 
 
 ## Table of Contents
-- [A metabolic world model system for personalised lifestyle medicine](#a-metabolic-world-model-system-for-personalised-lifestyle-medicine)
+- [X-Life](#x-life)
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
 - [Prerequisites \& Installation](#prerequisites--installation)
@@ -149,7 +149,7 @@ The Knowledge-Graph Guided Agents `./kg_agents/` generate personalized diet and 
 ```bash
 cd kg_agents
 # Extract knowledge from ./data
-python -m core.build_kg
+python -m core.build_kg_2_steps
 # Import knowledge graph
 python -m core.import_kg
 # (Optional) Embedding knowledge graph

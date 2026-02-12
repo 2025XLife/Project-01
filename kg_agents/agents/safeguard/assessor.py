@@ -12,7 +12,7 @@ from core.llm import get_llm
 from core.llm.utils import parse_json_response
 from core.neo4j import get_kg_query
 from agents.safeguard.config import *
-from kg.prompts import (
+from core.prompts import (
     DIETARY_QUERY_ENTITIES,
     get_keywords
 )

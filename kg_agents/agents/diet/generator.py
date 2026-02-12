@@ -11,7 +11,7 @@ from agents.diet.models import (
 from agents.diet.parser_var import DietPlanParser
 from core.llm.utils import parse_json_response
 from agents.diet.config import *
-from kg.prompts import (
+from core.prompts import (
     available_strategies, available_cuisines, GET_DIET_GENERATION_SYSTEM_PROMPT,
     build_diet_prompt
 )

@@ -8,7 +8,7 @@ import pandas as pd
 from tqdm import tqdm
 from config_loader import get_config
 from core.llm.utils import parse_json_response
-from kg.prompts import (
+from core.prompts import (
     DIET_KG_EXTRACT_COT_PROMPT_v1,
     DIET_KG_RESOLUTION_PROMPT_v1
 )
