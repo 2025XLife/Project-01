@@ -2,7 +2,7 @@
   <img src="./src/xlife.png" width="300" alt="X-Life System Logo">
 </p>
 
-<h1 align="center">X-Life: A Metabolic World Model System for Personalised Lifestyle Medicine</h1>
+<h1 align="center">X-Life</h1>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)](https://www.python.org/)
