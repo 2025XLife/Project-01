@@ -2,7 +2,6 @@ kg_agents/data/
 kg_agents/output_history/
 __pycache__/
 kg_agents/tests/
-*.zip
 kg_agents/tests/llm.log
 .ipynb_checkpoints/
 .plan/
@@ -13,5 +12,11 @@ kg_agents/kg/templates/
 
 *.html
 *.json
+*.zip
+*.png
+*.jpg
+*.jpeg
+!src/sample_data_placeholder.zip
+!src/xlife.png
 kg_agents/core/server.py
 !kg_agents/config.json
