@@ -198,6 +198,8 @@ curl -X POST http://localhost:5000/api/v1/safety/evaluate \
   }'
 ```
 
+For detailed prompt sample of prescription generation, prescription assessment and knowledge graph extraction, you can refer to [kg_agents/sample_prompts.md](./kg_agents/sample_prompts.md)
+
 ### 2. 🧠 Diet/Exercise Sub-world model and Ranking Module
 
 Diet/Exercise sub-world models predict latent metabolic state for diet prescription candidates. The glucose predict head simulates the glycemic trajectories 
@@ -399,3 +401,4 @@ A minimal, de-identified sample dataset containing representative CGM traces and
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+$$
