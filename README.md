@@ -5,7 +5,7 @@
 <div align="center">
 </div>
 
-## A metabolic world model system for personalised lifestyle medicine
+## X-Life
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) &nbsp; [![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)](https://www.python.org/) &nbsp; [![PyTorch 2.6](https://img.shields.io/badge/PyTorch-2.6-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/) &nbsp; [![Paper](https://img.shields.io/badge/Paper-Read_Manuscript-success)](placeholder) &nbsp; [![BibTeX](https://img.shields.io/badge/BibTeX-Citation-lightgrey)](#citation)
 
@@ -304,7 +304,7 @@ cd omics_model/
 ## Data Availability
 X-Life was trained on a dataset comprising 1.28 million lifestyle records and 0.46 billion continuous glucose monitoring (CGM) readings, collected from 834,360 individuals across multiple cohorts in China and the UK. The complete training corpus underlying the Metabolic World Model is accessible to researchers upon formal application to the respective cohort management committees, subject to applicable data privacy regulations and institutional approvals.
 
-A minimal, de-identified sample dataset containing representative CGM traces and structured lifestyle logs is available at `src/sample_data_placeholder.zip`.. The sample is specifically formatted for computational compatibility with the X-Life preprocessing and modeling pipelines, enabling code verification and functional demonstration. It is intended exclusively for testing and development purposes. Use of this sample for clinical inference, biomedical research, or any generalizable conclusion is strictly discouraged.
+A minimal, de-identified sample dataset containing representative CGM traces and structured lifestyle logs is available at `src/sample_data_placeholder.zip`. The sample is specifically formatted for computational compatibility with the X-Life preprocessing and modeling pipelines, enabling code verification and functional demonstration. It is intended exclusively for testing and development purposes. Use of this sample for clinical inference, biomedical research, or any generalizable conclusion is strictly discouraged.
 
 To train and evaluate the model, run:
 ```bash
@@ -316,8 +316,8 @@ python ...
 
 ### Hardware Ecosystem
 * CGM sensor (SIBIONICS CGM)
-* Fit Bands that provide sleep analysis and heart rate monitoring. 
-* XREAL One Pro (XREAL, China) 
+* Fit Bands that provide sleep analysis, heart rate monitoring, etc. 
+* XREAL One Pro (XREAL, China, Shenzhen) 
 
 ## Citation
 ```bibtex
