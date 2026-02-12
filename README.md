@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./src/X-Life_large.png" width="200" alt="X-Life System Logo">
+  <img src="./src/xlife.png" width="300" alt="X-Life System Logo">
 </p>
 
 <div align="center">
@@ -25,9 +25,19 @@ X-Life is a multimodal framework capable of integrating continuous glucose monit
     - [Test Generation \& Assessment Pipelines](#test-generation--assessment-pipelines)
     - [Start Flask service:](#start-flask-service)
   - [3. AR Deployment](#3-ar-deployment)
-    - [Hardware \& Software Setup](#hardware--software-setup)
-    - [Build APK](#build-apk)
-    - [License / Dependency Licenses](#license--dependency-licenses)
+    - [1) Hardware / Platform](#1-hardware--platform)
+    - [2) Software Environment (Recommended / Verified)](#2-software-environment-recommended--verified)
+    - [3) Dependencies: What must be installed?](#3-dependencies-what-must-be-installed)
+      - [A. Vuplex 3D WebView (Required, Not Included)](#a-vuplex-3d-webview-required-not-included)
+      - [B. XREAL XR Plugin (Required, Already Configured)](#b-xreal-xr-plugin-required-already-configured)
+      - [C. Unity Package Manager Dependencies (Auto-installed)](#c-unity-package-manager-dependencies-auto-installed)
+    - [4) Project Setup (What You Need to Change Before Running)](#4-project-setup-what-you-need-to-change-before-running)
+      - [4.1 Configure the WebView Initial URL](#41-configure-the-webview-initial-url)
+      - [4.2 (Optional) Configure iFLYTEK Speech Recognition](#42-optional-configure-iflytek-speech-recognition)
+    - [5) Build APK](#5-build-apk)
+      - [5.1 Pre-build Checklist](#51-pre-build-checklist)
+      - [5.2 Build Steps in Unity (Android)](#52-build-steps-in-unity-android)
+      - [6) Troubleshooting](#6-troubleshooting)
   - [4. Omics Integration](#4-omics-integration)
     - [Omics Data Preparation](#omics-data-preparation)
     - [Training Model](#training-model)
