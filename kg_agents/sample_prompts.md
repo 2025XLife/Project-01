@@ -1,5 +1,4 @@
 # Sample Prompts:
-We use DeepSeek-R1-0528 for knowledge graph extraction.
 
 #### 1. Prescription Generation
 This section provides the LLM prompt for lifestyle prescription generation module.
@@ -53,7 +52,7 @@ Identify any safety concerns:
 ```  
 
 ####  3. Knowledge-Graph Extraction:
-This section provides two LLM prompts for Knowledge Graph extraction.
+This section provides two LLM prompts for Knowledge Graph extraction. 
    1. The Knowledge Graph is initially extracted using the following prompt. This prompt utilizes a CoT process that first identifying the entities, and then derive the relations under the restriction of identified entities, ensuring the knowledge graph to be cohesive [^mo2025]. 
 ```
 You are a nutrionalist that extracts key Diet, Nutrition, and Lifestyle related entities from the Source Text.
@@ -78,7 +77,7 @@ Using *only* the entities identified in Step 1, extract structured relationships
 ## Execution
 Start two steps analysis, and output valid JSON object covered between ```json and ```.
 ```
-   2. The initial KG than go through a de-duplication process that consolidates synonymous term to prevent the graph from becoming fragmented.
+   1. The initial KG than go through a de-duplication process that consolidates synonymous term to prevent the graph from becoming fragmented.
 ```
 Find duplicate entities from a list of diet lifestyle terms (Extracted Entities) and an alias that best represents the duplicates.
 Duplicates are those that are the same in meaning, such as with variation in tense, plural form, stem form, case, abbreviation, shorthand.
