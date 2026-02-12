@@ -4,23 +4,11 @@
 
 <h1 align="center">X-Life: A Metabolic World Model System for Personalised Lifestyle Medicine</h1>
 
-<p align="center">
-  <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
-  </a>
-  <a href="https://www.python.org/">
-    <img src="https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white" alt="Python 3.10">
-  </a>
-  <a href="https://pytorch.org/">
-    <img src="https://img.shields.io/badge/PyTorch-2.6-EE4C2C?logo=pytorch&logoColor=white" alt="PyTorch 2.6">
-  </a>
-  <a href="placeholder">
-    <img src="https://img.shields.io/badge/Paper-Read_Manuscript-success" alt="Paper">
-  </a>
-  <a href="#citation">
-    <img src="https://img.shields.io/badge/BibTeX-Citation-lightgrey" alt="BibTeX">
-  </a>
-</p>
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch 2.6](https://img.shields.io/badge/PyTorch-2.6-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![Paper](https://img.shields.io/badge/Paper-Read_Manuscript-success)](placeholder)
+[![BibTeX](https://img.shields.io/badge/BibTeX-Citation-lightgrey)](#citation)
 
 <p align="center">
   <strong>X-Life</strong> is a metabolic world-model system for adaptive lifestyle medicine that translates continuous physiological data and sensing into personalised, quantitative dietary and postprandial activity prescriptions, concurrently meeting individual lifestyle preferences, contextual settings and safety constraints.
