@@ -20,10 +20,6 @@ X-Life is a multimodal framework capable of integrating continuous glucose monit
 - [Core Modules Usage](#core-modules-usage)
   - [1. Metabolic World Model](#1-metabolic-world-model)
   - [2. Knowledge-Graph Guided Agents](#2-knowledge-graph-guided-agents)
-    - [Knowledge-Graph Configuration](#knowledge-graph-configuration)
-    - [Setup Knowledge Graph](#setup-knowledge-graph)
-    - [Test Generation \& Assessment Pipelines](#test-generation--assessment-pipelines)
-    - [Start Flask service:](#start-flask-service)
   - [3. AR Deployment](#3-ar-deployment)
     - [1) Hardware / Platform](#1-hardware--platform)
     - [2) Software Environment (Recommended / Verified)](#2-software-environment-recommended--verified)
@@ -118,8 +114,7 @@ cd metabolic_world_model/
 The Knowledge-Graph Guided Agents `./kg_agents/` generate personalized diet and exercise prescriptions by grounding LLM outputs in a hybrid vector-graph metabolic knowledge base, safeguarded by a security module that enforces clinical safety through semantic auditing and deterministic constraints.
 
 
-#### Knowledge-Graph Configuration
-Configure Neo4j database, remote LLM API and local models in `./kg_agents/config.json`:
+1. Configure Neo4j database, remote LLM API and local models in `./kg_agents/config.json`:
 ```json
 {
     "neo4j": { # Neo4j configuration
@@ -137,8 +132,7 @@ Configure Neo4j database, remote LLM API and local models in `./kg_agents/config
 }
 ```
 
-#### Setup Knowledge Graph
-1. Prepare guidelines following the descriptions in our paper.
+2. Prepare guidelines following the descriptions in our paper.
 ```bash
 .
 ├── data/
@@ -150,7 +144,8 @@ Configure Neo4j database, remote LLM API and local models in `./kg_agents/config
 │       ├── exer_guideline_1.pdf
 │       └── ...
 ```
-Extract and embed entities (Make sure the Neo4j server has started):
+
+3. Extract and embed entities (Make sure the Neo4j server has started):
 ```bash
 cd kg_agents
 # Extract knowledge from ./data
@@ -161,27 +156,22 @@ python -m core.import_kg
 python -m core.embed_kg
 ```
 
+> Test Generation & Assessment Pipelines
 
-#### Test Generation & Assessment Pipelines
 ```bash
 # Test diet prescription pipeline
 python -m pipeline.diet_pipeline --bn 1 --vn 5 --query "I want a sandwich with just veggies, no meat." --use_vector --rag_topk 5
 # Test exer prescription pipeline
 python -m pipeline.exer_pipeline --bn 1 --vn 4 --query "I want to do some back exercises at the gym." --use_vector --rag_topk 5
 ```
-Pipeline Arguments:
-- `--bn`: Number of base plans to generate by LLM.
-- `--vn`: Number of variants per base plan.
-- `--query`: User user preference query.
-- `--use_vector`: Enable vector-based GraphRAG.
-- `--rag_topk`: Number of top-K results to retrieve from GraphRAG.
 
-
-#### Start Flask service:
+5. Start Flask service:
 ```bash
 python server.py
 ```
-Test service interfaces:
+
+> Test service interfaces:
+
 ```bash
 # diet prescriptions generation
 curl -X POST http://localhost:5000/api/v1/diet/generate-only -H "Content-Type: application/json" -d '{args}'
