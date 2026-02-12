@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./src/X-Life_large.png" width="200" alt="X-Life System Logo">
+  <img src="./src/xlife.png" width="200" alt="X-Life System Logo">
 </p>
 
 <div align="center">
