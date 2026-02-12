@@ -323,10 +323,9 @@ python ...
 
 ## Citation
 ```bibtex
-@article{XLife2026,
+@misc{XLife2026,
   title = {X-Life: A metabolic world model system for personalised lifestyle medicine},
   author = {Wu, Qian and Qin, Yiming and et al.},
-  journal = {},
   year = {2026}
 }
 ```
