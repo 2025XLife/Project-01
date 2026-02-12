@@ -5,7 +5,7 @@
 <div align="center">
 </div>
 
-## A metabolic world model system for personalised lifestyle medicine
+## X-Life
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) &nbsp; [![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)](https://www.python.org/) &nbsp; [![PyTorch 2.6](https://img.shields.io/badge/PyTorch-2.6-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/) &nbsp; [![Paper](https://img.shields.io/badge/Paper-Read_Manuscript-success)](placeholder) &nbsp; [![BibTeX](https://img.shields.io/badge/BibTeX-Citation-lightgrey)](#citation)
 
