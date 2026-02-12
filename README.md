@@ -11,8 +11,6 @@
 
 
 X-Life is a multimodal framework capable of integrating continuous glucose monitoring (CGM), wearable sensor signals, self-reported behavioural information and contextual metadata  to deliver personalized lifestyle prescriptions in real time. 
-<!-- [[![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit) | Python Version | [`Paper`](placeholder) | [[`BibTeX`](#Citation)]| Pytorch] -->
----
 
 ## Table of Contents
 - [A metabolic world model system for personalised lifestyle medicine](#a-metabolic-world-model-system-for-personalised-lifestyle-medicine)
@@ -27,8 +25,9 @@ X-Life is a multimodal framework capable of integrating continuous glucose monit
     - [Test Generation \& Assessment Pipelines](#test-generation--assessment-pipelines)
     - [Start Flask service:](#start-flask-service)
   - [3. AR Deployment](#3-ar-deployment)
-    - [Download Link](#download-link)
-    - [Deployment](#deployment)
+    - [Hardware \& Software Setup](#hardware--software-setup)
+    - [Build APK](#build-apk)
+    - [License / Dependency Licenses](#license--dependency-licenses)
   - [4. Omics Integration](#4-omics-integration)
     - [Omics Data Preparation](#omics-data-preparation)
     - [Training Model](#training-model)
@@ -43,7 +42,7 @@ X-Life is a multimodal framework capable of integrating continuous glucose monit
 This repository contains code, package and sample dataset for the paper "A metabolic world model system for personalised lifestyle medicine".
 
 ## Prerequisites & Installation
-- **Software Dependencies**: Python 3.10, Pytorch 2.6, JDK-17.0.18, Unity3D [Version]
+- **Software Dependencies**: Python 3.10, Pytorch 2.6, JDK-17.0.18, Unity3D [2022.3.x]
 - **Hardware Requirements**: NVIDIA A800 (for training), Windows 10 (for AR)
 - **Environment Setup**:
 
@@ -189,14 +188,102 @@ curl -X POST http://localhost:5000/api/v1/safety/evaluate -H "Content-Type: appl
 
 ### 3. AR Deployment
 
-#### Download Link
-To deploy the AR system, download our compiled package from google drive [AR package](https://drive.google.com/file/d/1wsCSKbhp4-D_9PP9yDsjLwHc_rho2jWU/view?usp=sharing), and install it on (写好系统版本):
+This Unity project targets **XREAL AR** devices to:
+- Embed a web page as the main UI via **Vuplex 3D WebView** (WebView scene)
+- Trigger **XREAL RGB Camera** capture / screen recording from the web page (camera capture scene)
+- Send capture results (photos/videos, local file paths / local HTTP URLs, etc.) back to the web page via `postMessage`
 
-#### Deployment
-```bash
-cd ar_deployment/
-```
+#### 1) Hardware / Platform
 
+- Target platform: Android
+- Device: XREAL devices / runtimes that support XREAL XR Plugin (and any Android device that can install an APK)
+- Debugging: USB cable + USB debugging enabled (required for Build & Run)
+
+#### 2) Software Environment (Recommended / Verified)
+
+- Unity: `2022.3.x` (this project uses `2022.3.61t8` in `ProjectSettings/ProjectVersion.txt`)
+- Unity Hub modules: Android Build Support (SDK / NDK / OpenJDK)
+- Optional: `adb` (usually not needed if you use Unity's Build & Run; needed for CLI install/debugging)
+
+#### 3) Dependencies: What must be installed?
+
+> The two most common blockers are: **Vuplex (commercial, not included in the repo)** + **XREAL XR Plugin (provided as a local tar package)**.
+
+##### A. Vuplex 3D WebView (Required, Not Included)
+
+- Purchase and import (Unity Asset Store): [Vuplex 3D WebView for Android (with Gecko Engine)](https://assetstore.unity.com/packages/tools/network/vuplex-3d-webview-for-android-with-gecko-engine-245867)
+- After importing, you should see: `Assets/Vuplex/WebView/...`, and be able to use `CanvasWebViewPrefab` in scenes
+- Note: if you want to run WebView directly in the macOS/Windows Editor, you may need to install the native plugins for those platforms per Vuplex docs; building for Android only is fine
+
+##### B. XREAL XR Plugin (Required, Already Configured)
+
+- Included in this project: `Packages/com.xreal.xr.tar.gz`
+- `Packages/manifest.json` references the local package: `"com.xreal.xr": "@com.xreal.xr.tar.gz"`
+- To upgrade the plugin: replace `Packages/com.xreal.xr.tar.gz` and keep the `manifest.json` reference consistent
+
+##### C. Unity Package Manager Dependencies (Auto-installed)
+
+After opening the project, Unity resolves dependencies from `Packages/manifest.json` automatically (e.g., Input System / AR Foundation / XR Interaction Toolkit). In most cases you do not need to install anything manually in Package Manager.
+
+#### 4) Project Setup (What You Need to Change Before Running)
+
+##### 4.1 Configure the WebView Initial URL
+
+1. Open the scene: `Assets/Scenes/WebView.unity`
+2. Select `CanvasWebViewPrefab` in the scene hierarchy
+3. Set `InitialUrl` to your web URL
+   - Current example value: `https://xlife.chat/MainPage/AR`
+
+##### 4.2 (Optional) Configure iFLYTEK Speech Recognition
+
+**REQUIRED if you want to use speech recognition features.**
+
+The speech recognition config file is: `Assets/Resources/XunfeiConfig.json`
+
+1. Register at [iFLYTEK Open Platform](https://www.xfyun.cn/) and create an application
+2. Obtain your API credentials (appId, apiKey, apiSecret)
+3. Edit `Assets/Resources/XunfeiConfig.json` and fill in:
+   - `appId`: Your application ID
+   - `apiKey`: Your API Key
+   - `apiSecret`: Your API Secret
+
+Alternatively, you can create a ScriptableObject config in Unity Editor:
+
+- Right-click in Project window → Create → XLIFE AR → Xunfei Speech Recognition Config
+- Set the credentials in the Inspector
+- Place the config asset in `Assets/Resources/` folder
+
+#### 5) Build APK
+
+##### 5.1 Pre-build Checklist
+
+- Vuplex is imported correctly (otherwise you will see compilation errors like missing `Vuplex.WebView` namespace)
+- `Packages/com.xreal.xr.tar.gz` exists and Unity Package Manager shows no errors
+- Scenes are included in Build Settings (this project should already be configured, but double-check):
+  - `Assets/Scenes/WebView.unity`
+  - `Assets/Scenes/RGBCameraAndCapture.unity`
+
+##### 5.2 Build Steps in Unity (Android)
+
+1. `File -> Build Settings...`
+2. Select `Android`, then click `Switch Platform`
+3. In `Scenes In Build`, make sure `WebView` and `RGBCameraAndCapture` are enabled (recommended: put `WebView` first)
+4. `Edit -> Project Settings -> XR Plug-in Management`
+   - In the `Android` tab, enable **XREAL** (XREAL XR Loader)
+5. `Player Settings -> Other Settings` (recommended values; adjust as needed)
+   - `Scripting Backend`: IL2CPP
+   - `Target Architectures`: ARM64
+6. Connect an Android device (Developer Mode + USB debugging enabled), then click `Build And Run`
+   - Or click `Build` to export an `.apk` and install it manually
+
+> Note: this project includes a custom manifest at `Assets/Plugins/Android/AndroidManifest.xml`, which declares network/microphone/screen-capture related permissions, including the Android 14+ foreground service permission `FOREGROUND_SERVICE_MEDIA_PROJECTION`.
+
+##### 6) Troubleshooting
+
+- `The type or namespace name 'Vuplex' could not be found`: Vuplex 3D WebView is not imported
+- WebView is blank / cannot load: check `InitialUrl`, device network, and whether cleartext HTTP is allowed (if using `http`)
+- Camera / screen recording does not work in Editor: XREAL capture APIs typically only work on real Android devices (there is also a mock branch in scripts)
+- Screen recording issues on Android 14+: make sure you did not overwrite/remove the foreground service permission declarations in `Assets/Plugins/Android/AndroidManifest.xml`
 
 ### 4. Omics Integration
 (这块可能需要按照组学代码修改，这里我让AI乱写的)
